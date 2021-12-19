@@ -1,1 +1,0 @@
-/usr/bin/c++   -g   CMakeFiles/Server_ChatAPP.dir/main.cpp.o  -o Server_ChatAPP 
