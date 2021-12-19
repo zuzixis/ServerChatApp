@@ -3,4 +3,4 @@ project(Server_ChatAPP)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Server_ChatAPP main.cpp models/User.cpp models/User.h models/Message.cpp models/Message.h models/Contact.cpp models/Contact.h models/GroupUser.cpp models/GroupUser.h)
+add_executable(Server_ChatAPP main.cpp models/User.cpp models/User.h models/Message.cpp models/Message.h models/Contact.cpp models/Contact.h)
