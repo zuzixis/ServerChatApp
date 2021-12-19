@@ -79,6 +79,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    string s;
 
     close(newsockfd);
     close(sockfd);
