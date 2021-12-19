@@ -1,9 +1,8 @@
+#pragma once
+
 //
 // Created by Jakub Rončák on 19/12/2021.
 //
-
-#ifndef SERVER_CHATAPP_USER_H
-#define SERVER_CHATAPP_USER_H
 
 #include "iostream"
 #include "Contact.h"
@@ -67,5 +66,3 @@ public:
 
     bool remove();
 };
-
-#endif //SERVER_CHATAPP_USER_H

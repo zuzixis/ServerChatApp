@@ -1,11 +1,5 @@
+#pragma once
 #include "iostream"
-
-//
-// Created by Jakub Rončák on 19/12/2021.
-//
-
-#ifndef SERVER_CHATAPP_GROUP_H
-#define SERVER_CHATAPP_GROUP_H
 
 using namespace std;
 
@@ -38,6 +32,3 @@ public:
     bool remove();
 
 };
-
-
-#endif //SERVER_CHATAPP_GROUP_H

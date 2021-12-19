@@ -1,28 +1,30 @@
+#pragma once
+
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
-#ifndef SERVER_CHATAPP_CONTACT_H
-#define SERVER_CHATAPP_CONTACT_H
 
 #include "User.h"
 
-enum Status_Message {
+enum Status_Contact {
     waiting, confirmed
 };
 
 class Contact {
     int id;
-    User *user_1, *user_2;
-    Status_Message *status;
+    const User *user_1, *user_2;
+    Status_Contact *status;
 
 public:
-    Contact(int id, const User &user1, const User &user2, Status_Message status);
+    Contact(int id, const User* user1, const User* user2, Status_Contact* status);
 
     // Get, Set
-    Status_Message getStatus() const;
+    int getId() const;
 
-    void setStatus(Status_Message status);
+    Status_Contact* getStatus();
+
+    void setStatus(Status_Contact* status);
 
     // CRUD
     bool save();
@@ -32,5 +34,3 @@ public:
     bool remove();
 };
 
-
-#endif //SERVER_CHATAPP_CONTACT_H

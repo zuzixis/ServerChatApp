@@ -1,57 +1,58 @@
+#pragma once
 
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
-#ifndef SERVER_CHATAPP_MESSAGE_H
-#define SERVER_CHATAPP_MESSAGE_H
-
 #include "iostream"
 #include "Group.h"
 #include "User.h"
 
-enum Status_Message { sent, received, read };
-
 using namespace std;
+
+
+enum Status_Message {
+    sent, received, read
+};
 
 class Message {
 private:
     int id;
-    Group* group_to;
-    User* user_from,*user_to;
-    string message,sent_at;
-    Status_Message status;
+    const Group *group_to;
+    const User *user_from, *user_to;
+    string *message;
+    const string* sent_at;
+    Status_Message* status;
 
 
 public:
-    Message(int id, Group *groupTo, User *userFrom, User *userTo, const string &message, const string &sentAt,
-            Status_Message status);
+    Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message, const string *sentAt,
+            Status_Message* status);
 
 
     // Get, Set
     int getId() const;
 
-    Group *getGroupTo() const;
+    const Group *getGroupTo() const;
 
-    User *getUserFrom() const;
+    const User *getUserFrom() const;
 
-    User *getUserTo() const;
+    const User *getUserTo() const;
 
-    const string &getMessage() const;
+    string *getMessage();
 
-    const string &getSentAt() const;
+    const string *getSentAt() const;
 
-    Status_Message getStatus() const;
+    Status_Message* getStatus() const;
 
-    void setMessage(const string &message);
+    void setMessage(string *message);
 
-    void setStatus(Status_Message status);
+    void setStatus(Status_Message* status);
 
     // CRUD
     bool save();
+
     bool update();
+
     bool remove();
 };
-
-
-#endif //SERVER_CHATAPP_MESSAGE_H
