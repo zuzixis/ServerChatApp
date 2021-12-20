@@ -59,3 +59,8 @@ bool Message::update() {
 bool Message::remove() {
     return false;
 }
+
+Model *Message::get() {
+
+    return nullptr;
+}
