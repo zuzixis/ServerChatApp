@@ -1,20 +1,17 @@
 #pragma once
-#include <iostream>
+
+#include "iostream"
+#include "Model.h"
 
 using namespace std;
 
-
-class Group {
+class Group : Model {
 private:
+//    static Group *loadedModels;
     int id;
     string name, createdAt;
 
 public:
-    Group(){
-        id = 0;
-        name = "";
-        createdAt = "";
-    }
     Group(int id, const string &name, const string &createdAt);
 
     //Getter, Setter
@@ -31,6 +28,8 @@ public:
     void setCreatedAt(const string &createdAt);
 
     //CRUD
+    static Model* get();
+
     bool save();
 
     bool update();

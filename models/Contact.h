@@ -1,42 +1,39 @@
 #pragma once
-#include "User.h"
 
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
 
-class User;
+#include "User.h"
+#include "Model.h"
 
-enum StatusContact {
+enum Status_Contact {
     waiting, confirmed
 };
 
-class Contact {
+class Contact : Model {
     int id;
     const User *user_1, *user_2;
-    StatusContact *status;
+    Status_Contact *status;
 
 public:
-    Contact(){
-        id = 0;
-        user_1 = nullptr;
-        user_2 = nullptr;
-        status = nullptr;
-    }
-    Contact(int id, const User* user1, const User* user2, StatusContact* status);
+    Contact(int id, const User *user1, const User *user2, Status_Contact *status);
 
     // Get, Set
     int getId() const;
 
-    StatusContact* getStatus();
+    Status_Contact *getStatus();
 
-    void setStatus(StatusContact* status);
+    void setStatus(Status_Contact *status);
 
     // CRUD
+    static Model* get();
+
     bool save();
 
     bool update();
 
     bool remove();
 };
+

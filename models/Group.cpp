@@ -1,9 +1,8 @@
-#include "Group.h"
 //
 // Created by Jakub Rončák on 19/12/2021.
 //
 
-
+#include "Group.h"
 
 Group::Group(int id, const string &name, const string &createdAt) : id(id), name(name), createdAt(createdAt) {}
 
@@ -41,4 +40,8 @@ bool Group::update() {
 
 bool Group::remove() {
     return false;
+}
+
+Model *Group::get() {
+    return nullptr;
 }

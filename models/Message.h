@@ -1,16 +1,13 @@
 #pragma once
 
-
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
-#include <iostream>
+#include "iostream"
 #include "Group.h"
 #include "User.h"
-
-class User;
-class Group;
+#include "Model.h"
 
 using namespace std;
 
@@ -19,27 +16,20 @@ enum Status_Message {
     sent, received, read
 };
 
-class Message {
+class Message : Model {
 private:
     int id;
     const Group *group_to;
     const User *user_from, *user_to;
-    string message, sent_at;
-    Status_Message* status;
+    string *message;
+    const string *sent_at;
+    Status_Message *status;
 
 
 public:
-    Message(){
-        id = 0;
-        group_to = nullptr;
-        user_from = nullptr;
-        user_to = nullptr;
-        message = "";
-        sent_at = "";
-        status = nullptr;
-    }
-    Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message, const string *sentAt,
-            Status_Message* status);
+    Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message,
+            const string *sentAt,
+            Status_Message *status);
 
 
     // Get, Set
@@ -55,13 +45,15 @@ public:
 
     const string *getSentAt() const;
 
-    Status_Message* getStatus() const;
+    Status_Message *getStatus() const;
 
     void setMessage(string *message);
 
-    void setStatus(Status_Message* status);
+    void setStatus(Status_Message *status);
 
     // CRUD
+    static Model* get();
+
     bool save();
 
     bool update();
