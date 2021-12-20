@@ -1,15 +1,10 @@
-//
-// Created by Zuzana Žillová on 19. 12. 2021.
-//
-
 #include "Message.h"
-
-Message::Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message,
+/*Message::Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message,
                  const string *sentAt,
                  Status_Message *status) : id(id), group_to(groupTo), user_from(userFrom), user_to(userTo),
                                            status(status) {
-    // TODO: dorobit konstruktor stringov
-}
+    // TODO: dorobit konstruktor stringov - ????
+}*/
 
 int Message::getId() const {
     return id;
@@ -28,11 +23,11 @@ const User *Message::getUserTo() const {
 }
 
 string *Message::getMessage() {
-    return message;
+    return &message;
 }
 
 const string *Message::getSentAt() const {
-    return sent_at;
+    return &sent_at;
 }
 
 Status_Message* Message::getStatus() const {
@@ -40,26 +35,29 @@ Status_Message* Message::getStatus() const {
 }
 
 void Message::setMessage(string *message) {
-    Message::message = message;
+    this->message = (*message);
 }
 
 void Message::setStatus(Status_Message* status) {
     Message::status = status;
 }
 
+Model *Message::get() {
+    //TODO: implementovať get
+    return nullptr;
+}
+
 bool Message::save() {
+    //TODO: implementovať save
     return false;
 }
 
 bool Message::update() {
+    //TODO: implementovať update
     return false;
 }
 
-bool Message::remove() {
+bool Message::remove(int id) {
+    //TODO: implementovať remove
     return false;
-}
-
-Model *Message::get() {
-
-    return nullptr;
 }

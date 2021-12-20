@@ -1,39 +1,43 @@
 #pragma once
-
-#include "iostream"
+#include <iostream>
 #include "Model.h"
 
 using namespace std;
 
-class Group : Model {
+class Group : public Model{
 private:
-//    static Group *loadedModels;
     int id;
     string name, createdAt;
 
 public:
-    Group(int id, const string &name, const string &createdAt);
+    Group() : Model(){
+        id = 0;
+        name = "";
+        createdAt = "";
+    }
 
-    //Getter, Setter
+    Group(const string *file,int id, const string &name, const string &createdAt) : Model(file){
+        this->id = id;
+        this->name = name;
+        this->createdAt = createdAt;
+    };
+
+    ~Group(){
+        //TODO:Treba implementovať, dealokovať pamat co sa vytvorilo cez new
+    }
+
+    //Gettery, Settery
     int getId() const;
-
     void setId(int id);
-
     const string &getName() const;
-
     void setName(const string &name);
-
     const string &getCreatedAt() const;
-
     void setCreatedAt(const string &createdAt);
 
-    //CRUD
-    static Model* get();
-
-    bool save();
-
-    bool update();
-
-    bool remove();
+    //Implemenrtácia zdedených metód
+    Model *get() override;
+    bool save() override;
+    bool update() override;
+    bool remove(int id) override;
 
 };

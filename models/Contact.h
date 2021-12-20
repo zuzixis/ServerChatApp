@@ -1,39 +1,46 @@
 #pragma once
-
-//
-// Created by Zuzana Žillová on 19. 12. 2021.
-//
-
-
 #include "User.h"
 #include "Model.h"
 
-enum Status_Contact {
+class User;
+
+enum StatusContact {
     waiting, confirmed
 };
 
-class Contact : Model {
+class Contact : public Model{
+private:
     int id;
-    const User *user_1, *user_2;
-    Status_Contact *status;
+    const User *user1, *user2;
+    StatusContact *status;
 
 public:
-    Contact(int id, const User *user1, const User *user2, Status_Contact *status);
+    Contact() : Model(){
+        id = 0;
+        user1 = nullptr;
+        user2 = nullptr;
+        status = nullptr;
+    }
 
-    // Get, Set
+    Contact(const string *file, int id, const User *user1, const User *user2, StatusContact *status): Model(file){
+        this->id = id;
+        this->user1 = user1;
+        this->user2 = user2;
+        this->status = status;
+    };
+
+    ~Contact(){
+        //TODO:Treba implementovať, dealokovať pamat co sa vytvorilo cez new
+    }
+
+    // Gettery, Settery
     int getId() const;
+    StatusContact* getStatus();
+    void setStatus(StatusContact* status);
 
-    Status_Contact *getStatus();
-
-    void setStatus(Status_Contact *status);
-
-    // CRUD
-    static Model* get();
-
-    bool save();
-
-    bool update();
-
-    bool remove();
+    //zdedene metody
+    Model *get() override;
+    bool save() override;
+    bool update() override;
+    bool remove(int id) override;
 };
-

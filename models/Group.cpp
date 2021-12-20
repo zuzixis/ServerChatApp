@@ -1,10 +1,4 @@
-//
-// Created by Jakub Rončák on 19/12/2021.
-//
-
 #include "Group.h"
-
-Group::Group(int id, const string &name, const string &createdAt) : id(id), name(name), createdAt(createdAt) {}
 
 int Group::getId() const {
     return id;
@@ -30,18 +24,22 @@ void Group::setCreatedAt(const string &createdAt) {
     Group::createdAt = createdAt;
 }
 
+Model *Group::get() {
+    //TODO: Implementovat get
+    return nullptr;
+}
+
 bool Group::save() {
+    //TODO: Implementovat save
     return false;
 }
 
 bool Group::update() {
+    //TODO: Implementovat update
     return false;
 }
 
-bool Group::remove() {
+bool Group::remove(int id) {
+    //TODO: Implementovat remove
     return false;
-}
-
-Model *Group::get() {
-    return nullptr;
 }

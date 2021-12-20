@@ -1,14 +1,7 @@
+#include "User.h"
 //
 // Created by Jakub Rončák on 19/12/2021.
 //
-
-#include "User.h"
-
-
-User::User(const string *file, const int id, string *name, string *password) : id(id), name(name),
-                                                                               password(password) {
-//    this->x::AAA;
-}
 
 int User::getId() const {
     return id;
@@ -57,7 +50,6 @@ bool User::isParIsLogged() const {
 void User::setParIsLogged(bool parIsLogged) {
     User::parIsLogged = parIsLogged;
 }
-
 vector<Message *> *User::getMessages() const {
     return messages;
 }
@@ -71,18 +63,23 @@ vector<Group *> *User::getGroups() const {
 }
 
 Model *User::get() {
+    //TODO:implementacia get
     return nullptr;
 }
 
 bool User::save() {
+    //TODO:implementacia save
     return false;
 }
 
 bool User::update() {
+    //TODO:implementacia update
     return false;
 }
 
-bool User::remove() {
+bool User::remove(int id) {
+    //TODO:implementacia remove
     return false;
 }
+
 
