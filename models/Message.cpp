@@ -1,8 +1,9 @@
+#include "Message.h"
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
-#include "Message.h"
+
 
 Message::Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message,
                  const string *sentAt,
@@ -28,11 +29,11 @@ const User *Message::getUserTo() const {
 }
 
 string *Message::getMessage() {
-    return message;
+    return &message;
 }
 
 const string *Message::getSentAt() const {
-    return sent_at;
+    return &sent_at;
 }
 
 Status_Message* Message::getStatus() const {
@@ -40,7 +41,7 @@ Status_Message* Message::getStatus() const {
 }
 
 void Message::setMessage(string *message) {
-    Message::message = message;
+    this->message = (*message);
 }
 
 void Message::setStatus(Status_Message* status) {

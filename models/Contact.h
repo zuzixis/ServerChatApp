@@ -1,30 +1,37 @@
 #pragma once
+#include "User.h"
 
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
 
-#include "User.h"
+class User;
 
-enum Status_Contact {
+enum StatusContact {
     waiting, confirmed
 };
 
 class Contact {
     int id;
     const User *user_1, *user_2;
-    Status_Contact *status;
+    StatusContact *status;
 
 public:
-    Contact(int id, const User* user1, const User* user2, Status_Contact* status);
+    Contact(){
+        id = 0;
+        user_1 = nullptr;
+        user_2 = nullptr;
+        status = nullptr;
+    }
+    Contact(int id, const User* user1, const User* user2, StatusContact* status);
 
     // Get, Set
     int getId() const;
 
-    Status_Contact* getStatus();
+    StatusContact* getStatus();
 
-    void setStatus(Status_Contact* status);
+    void setStatus(StatusContact* status);
 
     // CRUD
     bool save();
@@ -33,4 +40,3 @@ public:
 
     bool remove();
 };
-

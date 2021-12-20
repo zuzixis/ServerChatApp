@@ -1,7 +1,8 @@
 #pragma once
-#include "iostream"
+#include <iostream>
 
 using namespace std;
+
 
 class Group {
 private:
@@ -9,6 +10,11 @@ private:
     string name, createdAt;
 
 public:
+    Group(){
+        id = 0;
+        name = "";
+        createdAt = "";
+    }
     Group(int id, const string &name, const string &createdAt);
 
     //Getter, Setter

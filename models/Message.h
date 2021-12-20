@@ -1,12 +1,16 @@
 #pragma once
 
+
 //
 // Created by Zuzana Žillová on 19. 12. 2021.
 //
 
-#include "iostream"
+#include <iostream>
 #include "Group.h"
 #include "User.h"
+
+class User;
+class Group;
 
 using namespace std;
 
@@ -20,12 +24,20 @@ private:
     int id;
     const Group *group_to;
     const User *user_from, *user_to;
-    string *message;
-    const string* sent_at;
+    string message, sent_at;
     Status_Message* status;
 
 
 public:
+    Message(){
+        id = 0;
+        group_to = nullptr;
+        user_from = nullptr;
+        user_to = nullptr;
+        message = "";
+        sent_at = "";
+        status = nullptr;
+    }
     Message(int id, const Group *groupTo, const User *userFrom, const User *userTo, string *message, const string *sentAt,
             Status_Message* status);
 

@@ -1,8 +1,9 @@
+#include "Group.h"
 //
 // Created by Jakub Rončák on 19/12/2021.
 //
 
-#include "Group.h"
+
 
 Group::Group(int id, const string &name, const string &createdAt) : id(id), name(name), createdAt(createdAt) {}
 
@@ -30,14 +31,14 @@ void Group::setCreatedAt(const string &createdAt) {
     Group::createdAt = createdAt;
 }
 
-    bool Group::save() {
-        return false;
-    }
+bool Group::save() {
+    return false;
+}
 
-    bool Group::update() {
-        return false;
-    }
+bool Group::update() {
+    return false;
+}
 
-    bool Group::remove() {
-        return false;
-    }
+bool Group::remove() {
+    return false;
+}

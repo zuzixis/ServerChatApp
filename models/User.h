@@ -1,14 +1,16 @@
 #pragma once
+#include "Contact.h"
+#include "Message.h"
+#include <vector>
+#include <iostream>
 
 //
 // Created by Jakub Rončák on 19/12/2021.
 //
 
-#include "iostream"
-#include "Contact.h"
-#include "Group.h"
-#include "Message.h"
-#include "Vector.h"
+class Contact;
+class Message;
+
 using namespace std;
 
 class User {
@@ -26,6 +28,17 @@ private:
     vector<Group*>* groups;
 
 public:
+    User(){
+        id = 0;
+        port = 0;
+        name = "";
+        password = "";
+        ipAddress = "";
+        parIsLogged = false;
+        messages = nullptr;
+        contacts = nullptr;
+        groups = nullptr;
+    }
     User(int id, const string &name, const string &password);
 
     //Getter, Setter
