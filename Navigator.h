@@ -33,9 +33,9 @@ public:
     }
 
 
-    static bool redirect(string action, map<string,string>* data){
+    bool redirect(string action, map<string,string>* data){
 
-        if (action.compare("LOGIN")){
+        if (action.compare("LOGIN") == 0){
             //
         }else if (action.compare("LOGOUT")){
             //
