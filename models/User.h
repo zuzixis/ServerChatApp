@@ -10,7 +10,7 @@ class Message;
 class Group;
 using namespace std;
 
-class User : private Model{
+class User : public Model{
 private:
     int id, port;
     string name, password, ipAddress;
