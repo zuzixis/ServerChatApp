@@ -13,8 +13,6 @@ public:
 
     bool askForRequestsContact(const map<string, string>* data);
     map<string, string> getContactRequests(const map<string, string>* data);
-    bool confirmationContactRequest(const map<string, string>* data){
-
-    };
+    bool confirmationContactRequest(const map<string, string>* data);
 };
 
