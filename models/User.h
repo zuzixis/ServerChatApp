@@ -4,10 +4,12 @@
 #include <vector>
 #include <iostream>
 #include "Model.h"
+#include "../json.hpp"
 
 class Contact;
 class Message;
 class Group;
+//using json = nlohmann::json;
 using namespace std;
 
 class User : private Model{
@@ -31,6 +33,10 @@ public:
         contacts = nullptr;
         groups = nullptr;
     }
+
+//    User(const json& json){
+//        cout << json;
+//    }
 
     User(const string *file, int id, int port, const string &name, const string &password, const string &ipAddress) : Model(file){
         this->id = id;
@@ -71,4 +77,5 @@ public:
     bool save() override;
     bool update() override;
     bool remove(int id) override;
+
 };
