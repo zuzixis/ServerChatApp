@@ -4,6 +4,8 @@
 #include "models/Model.h"
 #include <fstream>
 #include <iostream>
+#include<map>
+
 //
 // Created by Jakub Rončák on 22/12/2021.
 //
@@ -12,7 +14,7 @@ using namespace std;
 
 class JsonReader {
 public:
-    static json read(const string &fileName, const int id) {
+    static json read(const string &fileName, const map<string, int> &filters) {
 
         ifstream myfile;
         json j;
@@ -23,14 +25,26 @@ public:
             myfile >> j;
         }
 
+        myfile.close();
+
         json filtered;
         std::copy_if(j.begin(), j.end(),
-                     std::back_inserter(filtered), [](const json& item) {
-                    return item.contains("id") && item["id"] == 2;
-                });
-        std::cout << filtered << std::endl;
+                     std::back_inserter(filtered), [&filters](const json &item) {
+                    map<string, int>::const_iterator it;
 
-        return j;
+                    for (it = filters.begin(); it != filters.end(); it++) {
+                        if (!item.contains(it->first)) {
+                            throw logic_error("Filtered key is not in json!");
+                        }
+                        if (item[it->first] != it->second) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+//        std::cout << filtered << std::endl;
+
+        return filtered;
     }
 };
 

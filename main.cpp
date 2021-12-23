@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <fstream>
 #include "JsonReader.h"
+//#include "models/User.h"
 
 
 using namespace std;
@@ -23,9 +24,10 @@ int main(int argc, char *argv[]) {
 
 //    JsonReader jr;
     string x = "database/users.json";
-    json j = JsonReader::read(x,1);
-
+    json j = JsonReader::read(x, {{"id", 2}});
+//    auto *users = new vector<User*>();
     for (json::iterator it = j.begin(); it != j.end(); ++it) {
+//        users->push_back(new User(*it));
         std::cout << *it << '\n';
     }
 
