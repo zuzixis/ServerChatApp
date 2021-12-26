@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Model.h"
 #include "../json.hpp"
+#include <netinet/in.h>
 
 class Contact;
 class Message;
@@ -14,9 +15,12 @@ using namespace std;
 
 class User : public Model{
 private:
-    int id, port;
-    string name, password, ipAddress;
+    int id;
+//    , port;
+//    string name, password, ipAddress;
     bool parIsLogged;
+    sockaddr_in activeSocket;
+    string token;
     vector<Message*>* messages;
     vector<Contact*>* contacts;
     vector<Group*>* groups;

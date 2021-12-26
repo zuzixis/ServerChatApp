@@ -1,5 +1,7 @@
 #pragma once
 #include <map>
+#include "../JsonReader.h"
+#include "../models/User.h"
 #include <iostream>
 
 using namespace std;
