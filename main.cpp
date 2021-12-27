@@ -20,7 +20,7 @@ static int uid = 10;
 
 
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
-ActiveUsersProvider activeUsersProvider;
+ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 
 void str_overwrite_stdout() {
     printf("\r%s", "> ");
@@ -118,10 +118,11 @@ void *handle_client(User *user) {
     bzero(buff_out, BUFFER_SZ);
 
     while (1) {
-        if (leave_flag) {
-            break;
-        }
+//        if (leave_flag) {
+//            break;
+//        }
 
+//        send(user->getSockfd(), "asda", BUFFER_SZ, 0);
         int receive = recv(user->getSockfd(), buff_out, BUFFER_SZ, 0);
         if (receive > 0) {
             if (strlen(buff_out) > 0) {
@@ -130,17 +131,23 @@ void *handle_client(User *user) {
                 str_trim_lf(buff_out, strlen(buff_out));
                 printf("%s -> %s\n", buff_out, user->getName().c_str());
             }
-        } else if (receive == 0 || strcmp(buff_out, "exit") == 0) {
-            sprintf(buff_out, "%s has left\n", user->getName().c_str());
-            printf("%s", buff_out);
-//            send_message(buff_out,user->getId());
-            leave_flag = 1;
-        } else {
-            printf("ERROR: -1\n");
-            leave_flag = 1;
         }
+//        else if (receive == 0 || strcmp(buff_out, "exit") == 0) {
+//            sprintf(buff_out, "%s has left\n", user->getName().c_str());
+//            printf("%s", buff_out);
+////            send_message(buff_out,user->getId());
+//            leave_flag = 1;
+//        }
+//        else {
+//            printf("ERROR: -1\n");
+//            leave_flag = 1;
+//        }
 
         bzero(buff_out, BUFFER_SZ);
+
+        send(user->getSockfd(), "Spat, nechcem", 100, 0);
+//        send(user->getSockfd(), "Spat, nechcem", 100, 0);
+
     }
 
     /* Delete client from queue and yield thread */
@@ -150,7 +157,7 @@ void *handle_client(User *user) {
 //    free(cli);
     cli_count--;
 
-    pthread_detach(pthread_self());
+//    pthread_detach(pthread_self());
 
     return NULL;
 }
@@ -160,7 +167,6 @@ int main(int argc, char **argv) {
         printf("Usage: %s <port>\n", argv[0]);
         return EXIT_FAILURE;
     }
-
 
     string ip = "127.0.0.1";
     int port = atoi(argv[1]);
@@ -180,7 +186,7 @@ int main(int argc, char **argv) {
     /* Ignore pipe signals */
     signal(SIGPIPE, SIG_IGN);
 
-    if (setsockopt(listenfd, SOL_SOCKET,  SO_REUSEADDR, (char *) &option, sizeof(option)) < 0) {
+    if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char *) &option, sizeof(option)) < 0) {
         perror("ERROR: setsockopt failed");
         return EXIT_FAILURE;
     }
@@ -232,9 +238,9 @@ int main(int argc, char **argv) {
             User *u = activeUsersProvider.getLastUser();
 //            queue_add(cli);
             thread tid(handle_client, u);
+            tid.detach();
 //            pthread_create(&tid, NULL, &handle_client, NULL);
         }
-
 
         /* Reduce CPU usage */
         sleep(1);

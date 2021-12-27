@@ -10,13 +10,13 @@ AuthController::~AuthController() {
 
 map<string, string> AuthController::login(const map<string, string> *data, int *connFd) {
     json loadedUsers;
-    JsonReader::read("database/users.json", *data, loadedUsers);
+//    JsonReader::read("database/users.json", *data, loadedUsers);
 
 //    if (loadedUsers.empty()) {
 //        return {{"status", "401"}};
 //    } else {
 
-    map<string, string> xx = loadedUsers.front();
+//    map<string, string> xx = loadedUsers.front();
 
 //        map<string, string> loadedUserMap = *loadedUsers.begin();
     // Jozko, odteraz sa odpojis od defaultnej a pojdes cez tento socket!

@@ -6,6 +6,7 @@
 
 void ActiveUsersProvider::addUser(User *u) {
     this->activeUsers->push_back(u);
+    this->activeUsers->push_back(u);
 }
 
 void ActiveUsersProvider::removeUser(const User *u) {

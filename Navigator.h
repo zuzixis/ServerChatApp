@@ -28,7 +28,7 @@ public:
         this->connfd = connfd;
 //        this->newUid = newUid;
 //        this->cliAddr = cliAddr;
-        activeUsersProvider = new ActiveUsersProvider();
+        activeUsersProvider = &ActiveUsersProvider::getInstance();
         authController = new AuthController(activeUsersProvider);
         contactsController = new ContactsController();
         groupsController = new GroupsController();
@@ -40,7 +40,7 @@ public:
         delete contactsController;
         delete groupsController;
         delete messageController;
-        delete activeUsersProvider;
+//        delete activeUsersProvider;
     }
 
     map<string, string> redirect(const string &action, map<string, string> &data);
