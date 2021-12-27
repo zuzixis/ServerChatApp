@@ -1,139 +1,244 @@
-#include <iostream>
-#include <string>
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 #include <string.h>
-#include <netdb.h>
-#include <sys/uio.h>
-#include <sys/time.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <fstream>
-#include "JsonReader.h"
+#include <thread>
+#include <sys/types.h>
+#include <signal.h>
+#include "providers/ActiveUsersProvider.h"
 #include "Navigator.h"
-//#include "models/User.h"
+
+#define MAX_CLIENTS 100
+#define BUFFER_SZ 2048
+
+static _Atomic unsigned int cli_count = 0;
+static int uid = 10;
 
 
-using namespace std;
+pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
+ActiveUsersProvider activeUsersProvider;
 
-int main(int argc, char *argv[]) {
+void str_overwrite_stdout() {
+    printf("\r%s", "> ");
+    fflush(stdout);
+}
 
-/*//    JsonReader jr;
-    string x = "database/users.json";
-    json j = JsonReader::read(x, {{"id", 2}});
-//    auto *users = new vector<User*>();
-    for (json::iterator it = j.begin(); it != j.end(); ++it) {
-//        users->push_back(new User(*it));
-        std::cout << *it << '\n';
-    }*/
-
-
-
-    //for the server, we only need to specify a port number
-    if (argc != 2) {
-        cerr << "Usage: port" << endl;
-        exit(0);
+void str_trim_lf(char *arr, int length) {
+    int i;
+    for (i = 0; i < length; i++) { // trim \n
+        if (arr[i] == '\n') {
+            arr[i] = '\0';
+            break;
+        }
     }
-    //grab the port number
-    int port = atoi(argv[1]);
-    //buffer to send and receive messages with
-    char msg[1500];
+}
 
-    //setup a socket and connection tools
-    sockaddr_in servAddr;
-    bzero((char *) &servAddr, sizeof(servAddr));
-    servAddr.sin_family = AF_INET;
-    servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servAddr.sin_port = htons(port);
+void print_client_addr(struct sockaddr_in addr) {
+    printf("%d.%d.%d.%d",
+           addr.sin_addr.s_addr & 0xff,
+           (addr.sin_addr.s_addr & 0xff00) >> 8,
+           (addr.sin_addr.s_addr & 0xff0000) >> 16,
+           (addr.sin_addr.s_addr & 0xff000000) >> 24);
+}
 
-    //open stream oriented socket with internet address
-    //also keep track of the socket descriptor
-    int serverSd = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSd < 0) {
-        cerr << "Error establishing the server socket" << endl;
-        exit(0);
-    }
-    //bind the socket to its local address
-    int bindStatus = bind(serverSd, (struct sockaddr *) &servAddr,
-                          sizeof(servAddr));
-    if (bindStatus < 0) {
-        cerr << "Error binding socket to local address" << endl;
-        exit(0);
-    }
-    cout << "Waiting for a client to connect..." << endl;
-    //listen for up to 5 requests at a time
-    listen(serverSd, 5);
-    //receive a request from client using accept
-    //we need a new address to connect with the client
-    sockaddr_in newSockAddr;
-    socklen_t newSockAddrSize = sizeof(newSockAddr);
-    //accept, create a new socket descriptor to
-    //handle the new connection with client
-    int newSd = accept(serverSd, (sockaddr *) &newSockAddr, &newSockAddrSize);
-    if (newSd < 0) {
-        cerr << "Error accepting request from client!" << endl;
-        exit(1);
-    }
+/* Add clients to queue */
+//void queue_add(User *u){
+//    pthread_mutex_lock(&clients_mutex);
+//
+//    for(int i=0; i < MAX_CLIENTS; ++i){
+//        if(!clients[i]){
+//            clients[i] = u;
+//            break;
+//        }
+//    }
+//
+//    pthread_mutex_unlock(&clients_mutex);
+//}
 
-    cout << "Connected with client!" << endl;
-    //lets keep track of the session time
-    struct timeval start1, end1;
-    gettimeofday(&start1, NULL);
-    //also keep track of the amount of data sent as well
-    int bytesRead, bytesWritten = 0;
+/* Remove clients to queue */
+//void queue_remove(int uid) {
+//    pthread_mutex_lock(&clients_mutex);
+//
+//
+//    for (int i = 0; i < MAX_CLIENTS; ++i) {
+//        if (clients[i]) {
+//            if (clients[i]->uid == uid) {
+//                clients[i] = NULL;
+//                break;
+//            }
+//        }
+//    }
+//
+//    pthread_mutex_unlock(&clients_mutex);
+//}
+//
+///* Send message to all clients except sender */
+//void send_message(char *s, int uid) {
+//    pthread_mutex_lock(&clients_mutex);
+//
+//    for (int i = 0; i < MAX_CLIENTS; ++i) {
+//        if (clients[i]) {
+//            if (clients[i]->uid != uid) {
+//                if (write(clients[i]->sockfd, s, strlen(s)) < 0) {
+//                    perror("ERROR: write to descriptor failed");
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//    pthread_mutex_unlock(&clients_mutex);
+//}
+
+/* Handle all communication with the client */
+void *handle_client(User *user) {
+    char buff_out[BUFFER_SZ];
+    char name[32];
+    int leave_flag = 0;
+
+    cli_count++;
+
+//    client_t *cli = (client_t *)arg;
+
+    // Name
+//    if (recv(user->getSockfd(), name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1) {
+//        printf("Didn't enter the name.\n");
+//        leave_flag = 1;
+//    } else {
+//        strcpy(user->getName().c_str(), name);
+    sprintf(buff_out, "%s has joined\n", user->getName().c_str());
+    printf("%s", buff_out);
+//        send_message(buff_out, user->getId());
+//    }
+
+    bzero(buff_out, BUFFER_SZ);
+
     while (1) {
-        //receive a message from the client (listen)
-        cout << "Awaiting client response..." << endl;
-        memset(&msg, 0, sizeof(msg));//clear the buffer
-        bytesRead += recv(newSd, (char *) &msg, sizeof(msg), 0);
-        if (!strcmp(msg, "exit")) {
-            cout << "Client has quit the session" << endl;
+        if (leave_flag) {
             break;
         }
 
-        cout << "Client: " << msg << endl;
-        cout << ">";
-        // data:
-        //   login,
-        //   name:jano
-        //   password:xxx
-        // TODO: parse tychto dat do akcie a mapy
-        //
+        int receive = recv(user->getSockfd(), buff_out, BUFFER_SZ, 0);
+        if (receive > 0) {
+            if (strlen(buff_out) > 0) {
+//                send_message(buff_out, user->getId());
+
+                str_trim_lf(buff_out, strlen(buff_out));
+                printf("%s -> %s\n", buff_out, user->getName().c_str());
+            }
+        } else if (receive == 0 || strcmp(buff_out, "exit") == 0) {
+            sprintf(buff_out, "%s has left\n", user->getName().c_str());
+            printf("%s", buff_out);
+//            send_message(buff_out,user->getId());
+            leave_flag = 1;
+        } else {
+            printf("ERROR: -1\n");
+            leave_flag = 1;
+        }
+
+        bzero(buff_out, BUFFER_SZ);
+    }
+
+    /* Delete client from queue and yield thread */
+    close(user->getSockfd());
+    activeUsersProvider.removeUser(user);
+//    queue_remove(cli->uid);
+//    free(cli);
+    cli_count--;
+
+    pthread_detach(pthread_self());
+
+    return NULL;
+}
+
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf("Usage: %s <port>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
 
-        string data;
-        getline(cin, data);
-        memset(&msg, 0, sizeof(msg)); //clear the buffer
-        strcpy(msg, data.c_str());
+    string ip = "127.0.0.1";
+    int port = atoi(argv[1]);
+    int option = 1;
+    int listenfd = 0, connfd = 0;
+    struct sockaddr_in serv_addr;
+    struct sockaddr_in cli_addr;
+//    thread();
+
+
+    /* Socket settings */
+    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = inet_addr(ip.c_str());
+    serv_addr.sin_port = htons(port);
+
+    /* Ignore pipe signals */
+    signal(SIGPIPE, SIG_IGN);
+
+    if (setsockopt(listenfd, SOL_SOCKET,  SO_REUSEADDR, (char *) &option, sizeof(option)) < 0) {
+        perror("ERROR: setsockopt failed");
+        return EXIT_FAILURE;
+    }
+
+    /* Bind */
+    if (::bind(listenfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        perror("ERROR: Socket binding failed");
+        return EXIT_FAILURE;
+    }
+
+    /* Listen */
+    if (listen(listenfd, 10) < 0) {
+        perror("ERROR: Socket listening failed");
+        return EXIT_FAILURE;
+    }
+
+    printf("=== WELCOME TO THE CHATROOM ===\n");
+
+    while (1) {
+        socklen_t clilen = sizeof(cli_addr);
+        connfd = accept(listenfd, (struct sockaddr *) &cli_addr, &clilen);
+
+        /* Check if max clients is reached */
+        if ((activeUsersProvider.getActiveUsers()->size() + 1) == MAX_CLIENTS) {
+            printf("Max clients reached. Rejected: ");
+            print_client_addr(cli_addr);
+            printf(":%d\n", cli_addr.sin_port);
+            close(connfd);
+            continue;
+        }
 
         string action = "LOGIN";
-        map<string, string> map = {{"name",     "name"},
-                                   {"password", "password"}};
+        map<string, string> map = {{"name",     "jozo"}, // {name:jakub}
+                                   {"password", "pass"}};
 
-        Navigator n;
-        n.redirect(action, map);
+        if (action == "LOGIN") {
+            pthread_mutex_lock(&clients_mutex);
+            Navigator n(&connfd);
+            n.redirect(action, map);
+            pthread_mutex_unlock(&clients_mutex);
 
-        if (data == "exit") {
-            //send to the client that server has closed the connection
-            send(newSd, (char *) &msg, strlen(msg), 0);
-            break;
+            /* Client settings */
+//        client_t *cli = (client_t *)malloc(sizeof(client_t));
+//        cli->address = cli_addr;
+//        cli->sockfd = connfd;
+//        cli->uid = uid++;
+
+            /* Add client to the queue and fork thread */
+            User *u = activeUsersProvider.getLastUser();
+//            queue_add(cli);
+            thread tid(handle_client, u);
+//            pthread_create(&tid, NULL, &handle_client, NULL);
         }
-        //send the message to client
-        bytesWritten += send(newSd, (char *) &msg, strlen(msg), 0);
+
+
+        /* Reduce CPU usage */
+        sleep(1);
     }
-    //we need to close the socket descriptors after we're all done
-    gettimeofday(&end1, NULL);
-    close(newSd);
-    close(serverSd);
-    cout << "********Session********" << endl;
-    cout << "Bytes written: " << bytesWritten << " Bytes read: " << bytesRead << endl;
-    cout << "Elapsed time: " << (end1.tv_sec - start1.tv_sec)
-         << " secs" << endl;
-    cout << "Connection closed..." << endl;
-    return 0;
+
+    return EXIT_SUCCESS;
 }

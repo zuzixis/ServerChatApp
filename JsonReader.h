@@ -4,6 +4,7 @@
 #include "models/Model.h"
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include<map>
 
 //
@@ -14,7 +15,7 @@ using namespace std;
 
 class JsonReader {
 public:
-    static json read(const string &fileName, const map<string, string> &filters);
+    static json read(const string &fileName, const map<string, string> &filters, json &filtered);
 };
 
 

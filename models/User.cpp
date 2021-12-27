@@ -11,14 +11,6 @@ void User::setId(int id) {
     User::id = id;
 }
 
-int User::getPort() const {
-    return port;
-}
-
-void User::setPort(int port) {
-    User::port = port;
-}
-
 const string &User::getName() const {
     return name;
 }
@@ -26,33 +18,10 @@ const string &User::getName() const {
 void User::setName(const string &name) {
     User::name = name;
 }
-
-const string &User::getPassword() const {
-    return password;
-}
-
-void User::setPassword(const string &password) {
-    User::password = password;
-}
-
-const string &User::getIpAddress() const {
-    return ipAddress;
-}
-
-void User::setIpAddress(const string &ipAddress) {
-    User::ipAddress = ipAddress;
-}
-
-bool User::isParIsLogged() const {
-    return parIsLogged;
-}
-
-void User::setParIsLogged(bool parIsLogged) {
-    User::parIsLogged = parIsLogged;
-}
-vector<Message *> *User::getMessages() const {
-    return messages;
-}
+//
+//vector<Message *> *User::getMessages() const {
+//    return messages;
+//}
 
 vector<Contact *> *User::getContacts() const {
     return contacts;
@@ -62,24 +31,52 @@ vector<Group *> *User::getGroups() const {
     return groups;
 }
 
-Model *User::get() {
-    //TODO:implementacia get
-    return nullptr;
+//Model *User::get() {
+//    //TODO:implementacia get
+//    return nullptr;
+//}
+//
+//bool User::save() {
+//    //TODO:implementacia save
+//    return false;
+//}
+//
+//bool User::update() {
+//    //TODO:implementacia update
+//    return false;
+//}
+//
+//bool User::remove(int id) {
+//    //TODO:implementacia remove
+//    return false;
+//}
+
+//void User::setMessages(vector<Message *> *messages) {
+//    User::messages = messages;
+//}
+
+void User::setContacts(vector<Contact *> *contacts) {
+    User::contacts = contacts;
 }
 
-bool User::save() {
-    //TODO:implementacia save
-    return false;
+//const sockaddr_in &User::getAddress() const {
+//    return address;
+//}
+//
+//void User::setAddress(const sockaddr_in &address) {
+//    User::address = address;
+//}
+
+int User::getSockfd() const {
+    return sockfd;
 }
 
-bool User::update() {
-    //TODO:implementacia update
-    return false;
+void User::setSockfd(int sockfd) {
+    User::sockfd = sockfd;
 }
 
-bool User::remove(int id) {
-    //TODO:implementacia remove
-    return false;
+void User::setGroups(vector<Group *> *groups) {
+    User::groups = groups;
 }
 
 

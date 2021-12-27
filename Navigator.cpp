@@ -6,9 +6,10 @@
 
 map<string, string> Navigator::redirect(const string &action, map<string, string> &data) {
 
+
     if (action == "LOGIN") {
-        map<string, string> map = {{"name", "name"}, {"password", "password"}};
-        return this->authController->login(&map);
+//        map<string, string> map = {{"name", "jozo"}, {"password", "pass"}};
+        return this->authController->login(&data,this->connfd);
     } else if (action == "LOGOUT") {
         //
     } else if (action == "DELETE_ACCOUNT") {
@@ -35,4 +36,5 @@ map<string, string> Navigator::redirect(const string &action, map<string, string
         //
     }
 
+    return {};
 }
