@@ -2,26 +2,17 @@
   {
     "id": 1,
     "name": "jozo",
-    "password": "pass",
-    "ip_address": "10.0.0.0",
-    "port": 1000,
-    "is_logged": false
+    "password": "pass"
   },
   {
     "id": 2,
     "name": "karolinka",
-    "password": "pass123",
-    "ip_address": "10.1.2.0",
-    "port": 1001,
-    "is_logged": true
+    "password": "pass123"
   },
   {
     "id": 3,
     "name": "Maros",
-    "password": "pass78",
-    "ip_address": "10.0.124.11",
-    "port": 1003,
-    "is_logged": true
+    "password": "pass78"
   }
 
 ]

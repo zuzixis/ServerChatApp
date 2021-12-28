@@ -18,11 +18,11 @@ public:
 
     map<string, string> login(const map<string, string> *data,int* connFd);
 
-    bool logout(const map<string, string> *data);
+    bool logout(const User* user);
 
     bool deleteAccount(const map<string, string> *data);
 
-    bool createAccount(const map<string, string> *data);
+    static bool createAccount(map<string, string> *data);
 
 
 };

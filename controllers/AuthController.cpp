@@ -30,14 +30,22 @@ map<string, string> AuthController::login(const map<string, string> *data, int *
 //    }
 }
 
-bool AuthController::logout(const map<string, string> *data) {
-    return false;
+bool AuthController::logout(const User* user) {
+    this->activeUsersProvider->removeUser(user);
 }
 
 bool AuthController::deleteAccount(const map<string, string> *data) {
     return false;
 }
 
-bool AuthController::createAccount(const map<string, string> *data) {
-    return false;
+bool AuthController::createAccount(map<string, string> *data) {
+    json loadedUsers;
+    JsonReader::read("database/users.json", {}, loadedUsers);
+
+    (*data)["id"] = to_string(loadedUsers.size()+1);
+    // TODO: mozeme takto generovat id pokial nejdeme pouzivat deleteAccount
+    loadedUsers.push_back(*data);
+    ofstream file("database/users.json");
+    file << loadedUsers;
+    file.close();
 }

@@ -15,7 +15,7 @@ map<string, string> Navigator::redirect(const string &action, map<string, string
     } else if (action == "DELETE_ACCOUNT") {
         //
     } else if (action == "REGISTER") {
-        //
+        authController->createAccount(&data);
     } else if (action == "GET_CONTACTS") {
         //
     } else if (action == "GET_GROUPS") {
