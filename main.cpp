@@ -143,7 +143,7 @@ void *handle_client(User *user) {
 //            leave_flag = 1;
 //        }
 
-        bzero(buff_out, BUFFER_SZ);
+        bzero(buff_out, BUFFER_SZ);// TODO: naco je buffer, ked do send davam konstantu?
 
         send(user->getSockfd(), "Spat, nechcem", 100, 0);
 //        send(user->getSockfd(), "Spat, nechcem", 100, 0);
@@ -163,6 +163,7 @@ void *handle_client(User *user) {
 }
 
 int main(int argc, char **argv) {
+
     if (argc != 2) {
         printf("Usage: %s <port>\n", argv[0]);
         return EXIT_FAILURE;
