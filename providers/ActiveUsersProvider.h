@@ -27,6 +27,7 @@ public:
 //        }
 //    }
     void addUser(User *u);
+    vector<User*>  getById(int id);
 
     void removeUser(const User *u);
 

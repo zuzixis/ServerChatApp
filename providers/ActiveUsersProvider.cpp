@@ -6,7 +6,6 @@
 
 void ActiveUsersProvider::addUser(User *u) {
     this->activeUsers->push_back(u);
-    this->activeUsers->push_back(u);
 }
 
 void ActiveUsersProvider::removeUser(const User *u) {
@@ -21,4 +20,13 @@ const vector<User *> *ActiveUsersProvider::getActiveUsers() {
 
 User *ActiveUsersProvider::getLastUser() {
     return activeUsers->back();
+}
+
+vector<User *> ActiveUsersProvider::getById(int id) {
+    vector<User *> ret; // TODO: netreba alokovat cez new?
+
+    copy_if (this->activeUsers->begin(), this->activeUsers->end(),
+                  back_inserter(ret), [id](User * u){return u->getId() == id;} );
+
+    return ret;
 }
