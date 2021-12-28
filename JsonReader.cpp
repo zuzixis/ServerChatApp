@@ -6,23 +6,22 @@
 
 json JsonReader::read(const string &fileName, const map<string, string> &filters, json &filtered) {
 
-    ifstream myfile(fileName);
+    ifstream myfile;
     json j;
 
-//    myfile.open(fileName);
+    myfile.open(fileName);
     cout << myfile.is_open() << endl;
     if (myfile.is_open()) {
         try
         {
-            j = json::parse(myfile);
+            myfile >> j;
         }
         catch (json::parse_error& ex)
         {
             std::cerr << "parse error at byte " << ex.byte << std::endl;
         }
+        myfile.close();
     }
-
-    myfile.close();
 
 //    map<string, string>::const_iterator filteredIt;
 
