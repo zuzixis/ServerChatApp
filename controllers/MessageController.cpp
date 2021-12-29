@@ -3,7 +3,6 @@
 //
 
 #include "MessageController.h"
-#include "../providers/ActiveUsersProvider.h"
 
 MessageController::MessageController() {
 
@@ -13,30 +12,31 @@ MessageController::~MessageController() {
 
 }
 
-bool MessageController::sendMessage(const map<string, string> *data) {
-    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-    vector<User *> acceptorConnections = activeUsersProvider.getById(stoi(data->at("to")));
-    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
-    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
-    {
-        send(userConnection->getSockfd(), "", 10, 0);
-    }
+string MessageController::sendMessage(const json *data) {
+//    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
+//    vector<User *> acceptorConnections = activeUsersProvider.getById(stoi(data->at("to")));
+//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
+//    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
+//    {
+//        send(userConnection->getSockfd(), "", 10, 0);
+//    }
+return "";
 // TODO: user nemusi byt prihlaseny, teda musim si danu spravu ulozit do suboru a aj do premennej.
 //  V subore budu vsetky spravy aj s priznakom, ci uz boli precitane
 }
 
-bool MessageController::sendFile(const map<string, string> *data) {
-    return false;
+string MessageController::sendFile(const json *data) {
+    return "false";
 }
 
-bool MessageController::sendImage(const map<string, string> *data) {
-    return false;
+string MessageController::sendImage(const json *data) {
+    return "false";
 }
 
-map<string, string> MessageController::getConversation(const map<string, string> *data) {
+string MessageController::getConversation(const json *data) {
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?
 
 //    return user->getMessages();
-    return map<string, string>();
+    return "map<string, string>()";
 }

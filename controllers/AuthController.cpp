@@ -40,15 +40,15 @@ string AuthController::deleteAccount(const json *data) {
     return "false";
 }
 
-string AuthController::createAccount(map<string, string> *data) {
-    json loadedUsers;
-    JsonReader::read("database/users.json", {}, loadedUsers);
-
-    (*data)["id"] = to_string(loadedUsers.size() + 1);
-    // TODO: mozeme takto generovat id pokial nejdeme pouzivat deleteAccount
-    loadedUsers.push_back(*data);
-    ofstream file("database/users.json");
-    file << loadedUsers;
-    file.close();
+string AuthController::createAccount(json *data) {
+//    json loadedUsers;
+//    JsonReader::read("database/users.json", {}, loadedUsers);
+//
+//    (*data)["id"] = to_string(loadedUsers.size() + 1);
+//    // TODO: mozeme takto generovat id pokial nejdeme pouzivat deleteAccount
+//    loadedUsers.push_back(*data);
+//    ofstream file("database/users.json");
+//    file << loadedUsers;
+//    file.close();
     return "false";
 }
