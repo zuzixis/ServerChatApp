@@ -14,7 +14,7 @@ string Navigator::redirect(const string &action, json &data) {
     } else if (action == "DELETE_ACCOUNT") {
         return this->authController->deleteAccount(&data);
     } else if (action == "REGISTER") {
-        authController->createAccount(&data);
+        return this->authController->createAccount(&data);
     } else if (action == "GET_CONTACTS") {
         //
     } else if (action == "GET_GROUPS") {

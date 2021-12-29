@@ -251,7 +251,8 @@ int main(int argc, char **argv) {
 
             if (j.contains("data") && j.contains("action")) {
                 //vykona sa akcia
-                if (j["action"] == "LOGIN" || j["action"] == "REGISTRATION") {
+                cout<<j["action"]<<endl;
+                if (j["action"] == "LOGIN" || j["action"] == "REGISTER" || j["action"] == "DELETE_ACCOUNT") {
                     pthread_mutex_lock(&clients_mutex);
                     Navigator n(&connfd);
                     string returnFromRedirect = n.redirect(j["action"], j["data"]);
