@@ -6,11 +6,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <pthread.h>
 #include <thread>
 #include <sys/types.h>
 #include <signal.h>
 #include "providers/ActiveUsersProvider.h"
 #include "Navigator.h"
+#include <string.h>
 
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
@@ -115,6 +117,8 @@ void *handle_client(User *user) {
 //        send_message(buff_out, user->getId());
 //    }
 
+
+
     bzero(buff_out, BUFFER_SZ);
 
     while (1) {
@@ -127,6 +131,14 @@ void *handle_client(User *user) {
         if (receive > 0) {
             if (strlen(buff_out) > 0) {
 //                send_message(buff_out, user->getId());
+                string input = "{action:\"LOGIN\",data:{name:\" Meno + \",password:\" pass\"}}";
+                json j = json::parse(input);
+
+                if (j.contains("data") && j.contains("action")){
+                    //vykona sa akcia
+                }else{
+                    //vrati sa chyba, že data nie su kompletne
+                }
 
                 str_trim_lf(buff_out, strlen(buff_out));
                 printf("%s -> %s\n", buff_out, user->getName().c_str());
@@ -169,7 +181,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    string ip = "127.0.0.1";
+    string ip = "127.0.0.2";
     int port = atoi(argv[1]);
     int option = 1;
     int listenfd = 0, connfd = 0;
@@ -223,11 +235,23 @@ int main(int argc, char **argv) {
         map<string, string> map = {{"name",     "jozo"}, // {name:jakub}
                                    {"password", "pass"}};
 
+        string input = "{action:\"LOGIN\",data:{name:\" Jozo + \",password:\" pass\"}}";
+        json j = json::parse(input);
+
+        if (j.contains("data") && j.contains("action")){
+            //vykona sa akcia
+        }else{
+            //vrati sa chyba, že data nie su kompletne
+        }
+
         if (action == "LOGIN") {
             pthread_mutex_lock(&clients_mutex);
             Navigator n(&connfd);
-            n.redirect(action, map);
+            n.redirect(action, j);
             pthread_mutex_unlock(&clients_mutex);
+
+
+
 
             /* Client settings */
 //        client_t *cli = (client_t *)malloc(sizeof(client_t));

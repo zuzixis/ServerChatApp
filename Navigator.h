@@ -43,6 +43,6 @@ public:
 //        delete activeUsersProvider;
     }
 
-    map<string, string> redirect(const string &action, map<string, string> &data);
+    string redirect(const string &action, json &data);
 };
 

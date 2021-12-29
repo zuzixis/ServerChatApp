@@ -15,8 +15,6 @@ public:
     bool sendMessage(const map<string, string>* data);
     bool sendFile(const map<string, string>* data);
     bool sendImage(const map<string, string>* data);
-
-
 };
 
 

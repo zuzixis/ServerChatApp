@@ -16,13 +16,11 @@ public:
 
     ~AuthController();
 
-    map<string, string> login(const map<string, string> *data,int* connFd);
+    string login(const json *data,int* connFd);
 
-    bool logout(const User* user);
+    string logout(const User* user);
 
-    bool deleteAccount(const map<string, string> *data);
+    string deleteAccount(const map<string, string> *data);
 
-    static bool createAccount(map<string, string> *data);
-
-
+    static string createAccount(map<string, string> *data);
 };

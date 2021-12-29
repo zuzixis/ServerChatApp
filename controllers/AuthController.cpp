@@ -8,7 +8,7 @@ AuthController::~AuthController() {
 
 }
 
-map<string, string> AuthController::login(const map<string, string> *data, int *connFd) {
+string AuthController::login(const json *data, int *connFd) {
     json loadedUsers;
     JsonReader::read("database/users.json", *data, loadedUsers);
 
@@ -26,19 +26,20 @@ map<string, string> AuthController::login(const map<string, string> *data, int *
 
     this->activeUsersProvider->addUser(user);
 
-    return {{"status", "200"}};
+    return loadedUsers[0]["id"];
 //    }
 }
 
-bool AuthController::logout(const User* user) {
+string AuthController::logout(const User* user) {
     this->activeUsersProvider->removeUser(user);
+    return "false";
 }
 
-bool AuthController::deleteAccount(const map<string, string> *data) {
-    return false;
+string AuthController::deleteAccount(const map<string, string> *data) {
+    return "false";
 }
 
-bool AuthController::createAccount(map<string, string> *data) {
+string AuthController::createAccount(map<string, string> *data) {
     json loadedUsers;
     JsonReader::read("database/users.json", {}, loadedUsers);
 
@@ -48,4 +49,5 @@ bool AuthController::createAccount(map<string, string> *data) {
     ofstream file("database/users.json");
     file << loadedUsers;
     file.close();
+    return "false";
 }

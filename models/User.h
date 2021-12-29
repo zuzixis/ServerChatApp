@@ -10,9 +10,7 @@
 #include <netinet/in.h>
 
 class Contact;
-
 class Message;
-
 class Group;
 //using json = nlohmann::json;
 using namespace std;
