@@ -26,6 +26,7 @@ add_executable(
         controllers/GroupsController.cpp
         controllers/GroupsController.h
         Navigator.cpp Navigator.h
+        Helpers.cpp Helpers.h
         controllers/RequestsController.cpp
         controllers/RequestsController.h providers/ActiveUsersProvider.cpp providers/ActiveUsersProvider.h)
 

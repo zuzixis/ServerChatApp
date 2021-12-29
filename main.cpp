@@ -12,12 +12,15 @@
 #include <signal.h>
 #include "providers/ActiveUsersProvider.h"
 #include "Navigator.h"
+#include "Helpers.h"
 #include <string.h>
+#include <regex>
 
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
 
-static  unsigned int cli_count = 0;
+using json = nlohmann::json;
+static unsigned int cli_count = 0;
 static int uid = 10;
 
 
@@ -134,9 +137,9 @@ void *handle_client(User *user) {
                 string input = "{action:\"LOGIN\",data:{name:\" Meno + \",password:\" pass\"}}";
                 json j = json::parse(input);
 
-                if (j.contains("data") && j.contains("action")){
+                if (j.contains("data") && j.contains("action")) {
                     //vykona sa akcia
-                }else{
+                } else {
                     //vrati sa chyba, že data nie su kompletne
                 }
 
@@ -181,7 +184,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    string ip = "127.0.0.2";
+    string ip = "127.0.0.1";
     int port = atoi(argv[1]);
     int option = 1;
     int listenfd = 0, connfd = 0;
@@ -216,7 +219,11 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    printf("=== WELCOME TO THE CHATROOM ===\n");
+    printf("=== Vitaj na Bajsfuuku ===\n");
+
+    char buffer[256];
+    string output;
+    int receive;
 
     while (1) {
         socklen_t clilen = sizeof(cli_addr);
@@ -231,45 +238,47 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        string action = "LOGIN";
-        map<string, string> map = {{"name",     "jozo"}, // {name:jakub}
-                                   {"password", "pass"}};
+//        string action = "LOGIN";
+//        map<string, string> map = {{"name",     "jozo"}, // {name:jakub}
+//                                   {"password", "pass"}};
 
-        string input = "{action:\"LOGIN\",data:{name:\" Jozo + \",password:\" pass\"}}";
-        json j = json::parse(input);
+//        string input = "{action:\"LOGIN\",data:{name:\" Jozo + \",password:\" pass\"}}";
+        bzero(buffer, 256);
+        receive = recv(connfd, buffer, 255, 0);
+        if (receive > 0) {
+            json j = json::parse(buffer);
+            bzero(buffer, 256);
 
-        if (j.contains("data") && j.contains("action")){
-            //vykona sa akcia
-        }else{
-            //vrati sa chyba, že data nie su kompletne
-        }
+            if (j.contains("data") && j.contains("action")) {
+                //vykona sa akcia
+                if (j["action"] == "LOGIN" || j["action"] == "REGISTRATION") {
+                    pthread_mutex_lock(&clients_mutex);
+                    Navigator n(&connfd);
+                    string returnFromRedirect = n.redirect(j["action"], j["data"]);
+                    pthread_mutex_unlock(&clients_mutex);
 
-        if (action == "LOGIN") {
-            pthread_mutex_lock(&clients_mutex);
-            Navigator n(&connfd);
-            n.redirect(action, j);
-            pthread_mutex_unlock(&clients_mutex);
+                    if (j["action"] == "LOGIN" && Helpers::isNumber(returnFromRedirect)) {
+                        // vratilo sa id usera
+                        /* Add client to the queue and fork thread */
+                        User *u = activeUsersProvider.getLastUser();
+                        thread tid(handle_client, u);
+                        tid.detach();
+                        output = R"({"status":200,"data":{}})";
+                    } else {
+                        output = returnFromRedirect;
+                    }
 
-
-
-
-            /* Client settings */
-//        client_t *cli = (client_t *)malloc(sizeof(client_t));
-//        cli->address = cli_addr;
-//        cli->sockfd = connfd;
-//        cli->uid = uid++;
-
-            /* Add client to the queue and fork thread */
-            User *u = activeUsersProvider.getLastUser();
-//            queue_add(cli);
-            thread tid(handle_client, u);
-            tid.detach();
 //            pthread_create(&tid, NULL, &handle_client, NULL);
+                }
+            } else {
+                //vrati sa chyba, že data nie su kompletne
+                output = R"({"status":422,"data":{}})";// TODO: do dat daj, v com bola chyba
+            }
+            Helpers::sgets(buffer, 255, &output);
+            send(connfd, buffer, strlen(buffer), 0);
         }
 
         /* Reduce CPU usage */
         sleep(1);
     }
-
-    return EXIT_SUCCESS;
 }

@@ -7,5 +7,8 @@
 
 using namespace std;
 class Helpers {
-    string gen_random(const int len);
+public:
+    static string gen_random(const int len);
+    static char *sgets(char *str, int num, string *input);
+    static bool isNumber(const string &str);
 };
