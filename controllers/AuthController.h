@@ -18,9 +18,11 @@ public:
 
     string login(const json *data,int* connFd);
 
-    string logout(const User* user);
+    string logout(const json *data);
 
-    string deleteAccount(const map<string, string> *data);
+    string deleteAccount(const json *data);
 
-    static string createAccount(map<string, string> *data);
+    static string createAccount(json *data);
 };
+
+

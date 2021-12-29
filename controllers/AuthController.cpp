@@ -30,16 +30,16 @@ string AuthController::login(const json *data, int *connFd) {
 //    }
 }
 
-string AuthController::logout(const User* user) {
-    this->activeUsersProvider->removeUser(user);
+string AuthController::logout(const json *data) {
+    //this->activeUsersProvider->removeUser(user);
     return "false";
 }
 
-string AuthController::deleteAccount(const map<string, string> *data) {
+string AuthController::deleteAccount(const json *data) {
     return "false";
 }
 
-string AuthController::createAccount(map<string, string> *data) {
+string AuthController::createAccount(json *data) {
     json loadedUsers;
     JsonReader::read("database/users.json", {}, loadedUsers);
 

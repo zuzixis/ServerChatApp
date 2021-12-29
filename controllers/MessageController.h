@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
 #include <iostream>
+#include "../JsonReader.h"
 
 using namespace std;
-
 
 class MessageController {
 
@@ -11,10 +11,10 @@ public:
     MessageController();
     ~MessageController();
 
-    map<string, string> getConversation(const map<string, string>* data);
-    bool sendMessage(const map<string, string>* data);
-    bool sendFile(const map<string, string>* data);
-    bool sendImage(const map<string, string>* data);
+    string getConversation(const json *data);
+    string sendMessage(const json *data);
+    string sendFile(const json *data);
+    string sendImage(const json *data);
 };
 
 
