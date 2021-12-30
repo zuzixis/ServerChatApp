@@ -16,9 +16,9 @@ public:
 
     ~AuthController();
 
-    string login(const json *data,int* connFd);
+    string login(const json *data, int *connFd);
 
-    string logout(const json* data);
+    string logout(const json *data);
 
     string deleteAccount(const json *data);
 

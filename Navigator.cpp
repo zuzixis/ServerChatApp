@@ -9,9 +9,11 @@ string Navigator::redirect(const string &action, json &data) {
     if (action == "LOGIN") {
 //        map<string, string> map = {{"name", "jozo"}, {"password", "pass"}};
         return this->authController->login(&data,this->connfd);
-    } else if (action == "LOGOUT") {
-        return this->authController->logout(&data);
-    } else if (action == "DELETE_ACCOUNT") {
+    }
+//    else if (action == "LOGOUT") {
+//        return this->authController->logout(&data);
+//    }
+    else if (action == "DELETE_ACCOUNT") {
         return this->authController->deleteAccount(&data);
     } else if (action == "REGISTER") {
         return this->authController->createAccount(&data);

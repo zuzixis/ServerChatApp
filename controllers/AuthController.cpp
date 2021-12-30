@@ -37,20 +37,31 @@ string AuthController::logout(const json *data) {
 }
 
 string AuthController::deleteAccount(const json *data) {
-    json loadedUsers;
+    json loadedUsers, newJson = json::parse("[]");
     JsonReader::read("database/users.json", {}, loadedUsers);
 
+    cout << *data << endl << endl;
+    cout << loadedUsers << endl << endl;
+    int id = data->at("id");
+    cout << "id: " << id << endl << endl;
     bool found = false;
-    remove_if(loadedUsers.begin(), loadedUsers.end(), [&data, &found](json const &user) {
-        if (user["name"] == data->at("name") && user["password"] == data->at("password")) {
-            found = true;
-        }
-        return found;
-    });
+
+    copy_if(
+            loadedUsers.begin(), loadedUsers.end(),
+            back_inserter(newJson), [&id, &found](const json &item) {
+                if ((int) (item["id"]) != id) {
+                    return true;
+                }
+                found = true;
+                return false;
+//                return (int) (item["id"]) != id;
+            });
+
+    cout << newJson << endl << endl;
 
     if (found) {
         ofstream file("database/users.json");
-        file << loadedUsers;
+        file << newJson;
         file.close();
         return R"({"status": 200,"data":{}})";
 
@@ -73,7 +84,8 @@ string AuthController::createAccount(json *data) {
     if (loadedUsers.empty()) {
         (*data)["id"] = 1;
     } else {
-        (*data)["id"] = to_string((int) loadedUsers.end()->at("id") + 1);
+        cout << loadedUsers.back().at("id") << endl;
+        (*data)["id"] = (int) loadedUsers.back().at("id") + 1;
     }
     loadedUsers.push_back(*data);
     ofstream file("database/users.json");
