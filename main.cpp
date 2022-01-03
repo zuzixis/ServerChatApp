@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
     }
 
     /* Set the option active */
-    optval = 1;
+    optval = 5;
     optlen = sizeof(optval);
     if (setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
         perror("setsockopt()");
