@@ -21,7 +21,6 @@ string ContactsController::getContacts(const json* data) {
             R"({"or":)"s + "{\"user_1\":" + to_string(userId) + ",\"user_2\":" + to_string(userId) +
             "}}");
 
-
     json loadedContacts;
     JsonReader::read("database/contacts.json", filters, loadedContacts);
 

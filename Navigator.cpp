@@ -23,19 +23,19 @@ string Navigator::redirect(const string &action, json &data) {
         } else if (action == "GET_GROUPS") {
             return this->groupsController->getGroups(&data);
         } else if (action == "GET_CONVERSATION") {
-            return messageController->getConversation(&data);
+            return this->messageController->getConversation(&data);
         } else if (action == "ASK_FOR_REQUESTS_CONTACT") {
-            //
+            return this->requestsController->askForRequestsContact(&data);
         } else if (action == "GET_CONTACT_REQUESTS") {
-
+            return this->requestsController->getContactRequests(&data);
         } else if (action == "CONFIRMATION_CONTACT_REQUEST") {
-
+            return this->requestsController->confirmationContactRequest(&data);
         } else if (action == "SEND_MESSAGE") {
-            return messageController->sendMessage(&data);
+            return this->messageController->sendMessage(&data);
         } else if (action == "SEND_FILE") {
-            return messageController->sendFile(&data);
+            return this->messageController->sendFile(&data);
         } else if (action == "SEND_IMAGE") {
-            return messageController->sendImage(&data);
+            return this->messageController->sendImage(&data);
         }
     }
 

@@ -8,6 +8,7 @@
 #include "controllers/ContactsController.h"
 #include "controllers/GroupsController.h"
 #include "controllers/MessageController.h"
+#include "controllers/RequestsController.h"
 #include "providers/ActiveUsersProvider.h"
 
 using namespace std;
@@ -21,6 +22,7 @@ private:
     ContactsController *contactsController;
     GroupsController *groupsController;
     MessageController *messageController;
+    RequestsController *requestsController;
     ActiveUsersProvider *activeUsersProvider;
 
 public:
@@ -32,6 +34,7 @@ public:
         authController = new AuthController(activeUsersProvider);
         contactsController = new ContactsController();
         groupsController = new GroupsController();
+        requestsController = new RequestsController();
         messageController = new MessageController();
     }
 

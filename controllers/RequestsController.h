@@ -1,18 +1,28 @@
 #pragma once
+
 #include <map>
 #include <iostream>
+#include "../json.hpp"
+#include "../JsonReader.h"
+#include "../Helpers.h"
+#include "../providers/ActiveUsersProvider.h"
 
 using namespace std;
-
+using json = nlohmann::json;
 
 class RequestsController {
 
 public:
     RequestsController();
+
     ~RequestsController();
 
-    bool askForRequestsContact(const map<string, string>* data);
-    map<string, string> getContactRequests(const map<string, string>* data);
-    bool confirmationContactRequest(const map<string, string>* data);
+    string askForRequestsContact(const json *data);
+
+    string getContactRequests(const json *data);
+
+    string confirmationContactRequest(const json *data);
+
+    string rejectContactRequest(const json *data);
 };
 
