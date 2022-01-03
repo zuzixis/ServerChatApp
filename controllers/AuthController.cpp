@@ -87,6 +87,7 @@ string AuthController::createAccount(json *data) {
         cout << loadedUsers.back().at("id") << endl;
         (*data)["id"] = (int) loadedUsers.back().at("id") + 1;
     }
+
     loadedUsers.push_back(*data);
     ofstream file("database/users.json");
     file << loadedUsers;

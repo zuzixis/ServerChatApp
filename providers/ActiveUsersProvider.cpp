@@ -30,3 +30,13 @@ vector<User *> ActiveUsersProvider::getById(int id) {
 
     return ret;
 }
+
+int ActiveUsersProvider::getActualUserId() const {
+    return actualUserId;
+}
+
+void ActiveUsersProvider::setActualUserId(int actualUserId) {
+    ActiveUsersProvider::actualUserId = actualUserId;
+}
+
+

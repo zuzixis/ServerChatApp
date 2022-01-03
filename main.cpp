@@ -25,7 +25,7 @@ static int uid = 10;
 
 
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
-ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
+//ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 
 
 void print_client_addr(struct sockaddr_in addr) {
@@ -47,17 +47,27 @@ void *handle_client(int connfd) {
     sprintf(buff_out, "Someone has joined\n");
 
     bzero(buff_out, BUFFER_SZ);
-    char buffer[256];
+    char buffer[BUFFER_SZ];
     int receive;
 //    bool enableNavigation;
     string output;
     User *user;
 
+//    int keepalive = 5;
+//    int keepcount = 3;
+//
+//    setsockopt(rs, SOL_SOCKET, SO_KEEPALIVE, (void *)&keepalive , sizeof(keepalive ));
+//    setsockopt(rs, SOL_TCP, TCP_KEEPIDLE, (void*)&keepidle , sizeof(keepidle ));
+//    setsockopt(rs, SOL_TCP, TCP_KEEPINTVL, (void *)&keepinterval , sizeof(keepinterval ));
+//    setsockopt(rs, SOL_TCP, TCP_KEEPCNT, (void *)&keepcount , sizeof(keepcount ));
+
     while (1) {
 
         bzero(buffer, BUFFER_SZ);
         receive = recv(connfd, buffer, BUFFER_SZ, 0);
-        if (receive >= 0) {
+        if (receive > 0) {
+//            cout << "buffer: " << buffer << endl;
+
             json j = json::parse(buffer);
             bzero(buffer, BUFFER_SZ);
             cout << j << endl;
@@ -72,11 +82,18 @@ void *handle_client(int connfd) {
                     if (j["action"] == "LOGIN" && Helpers::isNumber(returnFromRedirect)) {
                         // vratilo sa id usera
                         /* Add client to the queue and fork thread */
-                        user = activeUsersProvider.getLastUser();
+                        user = ActiveUsersProvider::getInstance().getLastUser();
+                        if (user != nullptr) {
+                            ActiveUsersProvider::getInstance().setActualUserId(user->getId());
+                        } else {
+                            ActiveUsersProvider::getInstance().setActualUserId(0);
+                        }
+
                         output = R"({"status":200,"data":{}})";
                     } else if (j["action"] == "LOGOUT") {
                         pthread_mutex_lock(&clients_mutex);
-                        activeUsersProvider.removeUser(user);
+                        ActiveUsersProvider::getInstance().removeUser(user);
+                        user = nullptr;
                         pthread_mutex_unlock(&clients_mutex);
                         output = R"({"status":200,"data":{}})";
                     } else {
@@ -89,9 +106,9 @@ void *handle_client(int connfd) {
                 //vrati sa chyba, že data nie su kompletne
                 output = R"({"status":422,"data":{}})";// TODO: do dat daj, v com bola chyba
             }
-            Helpers::sgets(buffer, 255, &output);
+            Helpers::sgets(buffer, 2047, &output);
             send(connfd, buffer, strlen(buffer), 0);
-        } else {
+        } else if (receive < 0) {
             break;
         }
     }
@@ -100,7 +117,7 @@ void *handle_client(int connfd) {
     close(connfd);
     if (user) {
         pthread_mutex_lock(&clients_mutex);
-        activeUsersProvider.removeUser(user);
+        ActiveUsersProvider::getInstance().removeUser(user);
         pthread_mutex_unlock(&clients_mutex);
     }
     cout << "Koncim vlakno" << endl;
@@ -115,6 +132,9 @@ void *handle_client(int connfd) {
 
 int main(int argc, char **argv) {
 
+//    MessageController m;
+//    m.getConversation(nullptr);
+
     if (argc != 2) {
         printf("Usage: %s <port>\n", argv[0]);
         return EXIT_FAILURE;
@@ -126,6 +146,9 @@ int main(int argc, char **argv) {
     int listenfd = 0, connfd = 0;
     struct sockaddr_in serv_addr;
     struct sockaddr_in cli_addr;
+    int optval;
+    socklen_t optlen = sizeof(optval);
+
 //    thread();
 
 
@@ -141,6 +164,15 @@ int main(int argc, char **argv) {
     if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char *) &option, sizeof(option)) < 0) {
         perror("ERROR: setsockopt failed");
         return EXIT_FAILURE;
+    }
+
+    /* Set the option active */
+    optval = 1;
+    optlen = sizeof(optval);
+    if(setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
+        perror("setsockopt()");
+        close(listenfd);
+        exit(EXIT_FAILURE);
     }
 
     /* Bind */
@@ -164,7 +196,7 @@ int main(int argc, char **argv) {
         // TODO: tu daj login a registraciu z vlakna
 
         /* Check if max clients is reached */
-        if ((activeUsersProvider.getActiveUsers()->size() + 1) == MAX_CLIENTS) {
+        if ((ActiveUsersProvider::getInstance().getActiveUsers()->size() + 1) == MAX_CLIENTS) {
             printf("Max clients reached. Rejected: ");
             print_client_addr(cli_addr);
             printf(":%d\n", cli_addr.sin_port);

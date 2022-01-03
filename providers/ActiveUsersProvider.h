@@ -10,6 +10,7 @@
 using namespace std;
 
 class ActiveUsersProvider {
+    int actualUserId = 0;
     vector<User *> *activeUsers = new vector<User *>();
 
 //    static ActiveUsersProvider *instance = {};
@@ -34,5 +35,9 @@ public:
     const vector<User *> *getActiveUsers();
 
     User *getLastUser();
+
+    int getActualUserId() const;
+
+    void setActualUserId(int actualUserId);
 };
 

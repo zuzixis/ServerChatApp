@@ -13,8 +13,8 @@ public:
     MessageController();
     ~MessageController();
 
-    string getConversation(const json* data);
-    string sendMessage(const json* data);
+    json getConversation(const json *data);
+    string sendMessage( json* data);
     string sendFile(const json* data);
     string sendImage(const json* data);
 };

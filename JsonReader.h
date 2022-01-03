@@ -15,7 +15,10 @@ using namespace std;
 
 class JsonReader {
 public:
-    static json read(const string &fileName, const map<string, string> &filters, json &filtered);
+    static json read(const string &fileName, const json &filters, json &filtered);
+private:
+    static bool filterOr(const json &filters,const json &item);
+    static bool filterAnd(const json &filters,const json &item);
 };
 
 

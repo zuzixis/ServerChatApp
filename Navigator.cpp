@@ -8,34 +8,37 @@ string Navigator::redirect(const string &action, json &data) {
 
     if (action == "LOGIN") {
 //        map<string, string> map = {{"name", "jozo"}, {"password", "pass"}};
-        return this->authController->login(&data,this->connfd);
+        return this->authController->login(&data, this->connfd);
+    } else if (action == "REGISTER") {
+        return this->authController->createAccount(&data);
     }
 //    else if (action == "LOGOUT") {
 //        return this->authController->logout(&data);
 //    }
-    else if (action == "DELETE_ACCOUNT") {
-        return this->authController->deleteAccount(&data);
-    } else if (action == "REGISTER") {
-        return this->authController->createAccount(&data);
-    } else if (action == "GET_CONTACTS") {
-        //
-    } else if (action == "GET_GROUPS") {
-        //
-    } else if (action == "GET_CONVERSATION") {
-        messageController->getConversation(&data);
-    } else if (action == "ASK_FOR_REQUESTS_CONTACT") {
-        //
-    } else if (action == "GET_CONTACT_REQUESTS") {
+    if (ActiveUsersProvider::getInstance().getActualUserId() > 0) {
+        if (action == "DELETE_ACCOUNT") {
+            return this->authController->deleteAccount(&data);
+        } else if (action == "GET_CONTACTS") {
+            //
+        } else if (action == "GET_GROUPS") {
+            //
+        } else if (action == "GET_CONVERSATION") {
+            return messageController->getConversation(&data);
+        } else if (action == "ASK_FOR_REQUESTS_CONTACT") {
+            //
+        } else if (action == "GET_CONTACT_REQUESTS") {
 
-    } else if (action == "CONFIRMATION_CONTACT_REQUEST") {
+        } else if (action == "CONFIRMATION_CONTACT_REQUEST") {
 
-    } else if (action == "SEND_MESSAGE") {
-        messageController->sendMessage(&data);
-    } else if (action == "SEND_FILE") {
-        messageController->sendFile(&data);
-    } else if (action == "SEND_IMAGE") {
-        messageController->sendImage(&data);
+        } else if (action == "SEND_MESSAGE") {
+            return messageController->sendMessage(&data);
+        } else if (action == "SEND_FILE") {
+            return messageController->sendFile(&data);
+        } else if (action == "SEND_IMAGE") {
+            return messageController->sendImage(&data);
+        }
     }
+
 
     return "false";
 }
