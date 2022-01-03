@@ -1,9 +1,12 @@
 #pragma once
 #include <map>
 #include <iostream>
+#include "../json.hpp"
+#include "../JsonReader.h"
+#include "../providers/ActiveUsersProvider.h"
 
 using namespace std;
-
+using json = nlohmann::json;
 
 class GroupsController {
 
@@ -11,6 +14,6 @@ public:
     GroupsController();
     ~GroupsController();
 
-    map<string, string> getGroups(const map<string, string>* data);
+    string getGroups(const json* data);
 
 };

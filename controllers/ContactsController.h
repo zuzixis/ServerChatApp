@@ -1,8 +1,12 @@
 #pragma once
 #include <map>
 #include <iostream>
+#include "../json.hpp"
+#include "../JsonReader.h"
+#include "../providers/ActiveUsersProvider.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 class ContactsController {
 
@@ -10,7 +14,7 @@ public:
     ContactsController();
     ~ContactsController();
 
-    map<string, string> getContacts(const map<string, string>* data);
+    string getContacts(const json* data);
 
 
 };

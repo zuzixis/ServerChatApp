@@ -17,7 +17,7 @@
 #include <regex>
 
 #define MAX_CLIENTS 100
-#define BUFFER_SZ 2048
+#define BUFFER_SZ 4096
 
 using json = nlohmann::json;
 static unsigned int cli_count = 0;
@@ -48,7 +48,7 @@ void *handle_client(int connfd) {
 
     bzero(buff_out, BUFFER_SZ);
     char buffer[BUFFER_SZ];
-    int receive;
+    int receiveSendStatus;
 //    bool enableNavigation;
     string output;
     User *user;
@@ -60,12 +60,18 @@ void *handle_client(int connfd) {
 //    setsockopt(rs, SOL_TCP, TCP_KEEPIDLE, (void*)&keepidle , sizeof(keepidle ));
 //    setsockopt(rs, SOL_TCP, TCP_KEEPINTVL, (void *)&keepinterval , sizeof(keepinterval ));
 //    setsockopt(rs, SOL_TCP, TCP_KEEPCNT, (void *)&keepcount , sizeof(keepcount ));
-
+    string final;
     while (1) {
 
+//        final = "";
         bzero(buffer, BUFFER_SZ);
-        receive = recv(connfd, buffer, BUFFER_SZ, 0);
-        if (receive > 0) {
+        receiveSendStatus = recv(connfd, buffer, BUFFER_SZ, 0);
+//        do {
+//
+//            final += buffer;
+//        } while (receiveSendStatus > 0);
+//        receive = recv(connfd, buffer, BUFFER_SZ, 0);
+        if (receiveSendStatus > 0) {
 //            cout << "buffer: " << buffer << endl;
 
             json j = json::parse(buffer);
@@ -106,9 +112,13 @@ void *handle_client(int connfd) {
                 //vrati sa chyba, že data nie su kompletne
                 output = R"({"status":422,"data":{}})";// TODO: do dat daj, v com bola chyba
             }
-            Helpers::sgets(buffer, 2047, &output);
-            send(connfd, buffer, strlen(buffer), 0);
-        } else if (receive < 0) {
+            Helpers::sgets(buffer, BUFFER_SZ, &output);
+//            final = "";
+                receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
+//            do {
+////                final += buffer;
+//            } while (receiveSendStatus > 0);
+        } else if (receiveSendStatus < 0) {
             break;
         }
     }
@@ -169,7 +179,7 @@ int main(int argc, char **argv) {
     /* Set the option active */
     optval = 1;
     optlen = sizeof(optval);
-    if(setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
+    if (setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
         perror("setsockopt()");
         close(listenfd);
         exit(EXIT_FAILURE);

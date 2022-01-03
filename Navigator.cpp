@@ -19,9 +19,9 @@ string Navigator::redirect(const string &action, json &data) {
         if (action == "DELETE_ACCOUNT") {
             return this->authController->deleteAccount(&data);
         } else if (action == "GET_CONTACTS") {
-            //
+            return this->contactsController->getContacts(&data);
         } else if (action == "GET_GROUPS") {
-            //
+            return this->groupsController->getGroups(&data);
         } else if (action == "GET_CONVERSATION") {
             return messageController->getConversation(&data);
         } else if (action == "ASK_FOR_REQUESTS_CONTACT") {

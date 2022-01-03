@@ -58,13 +58,18 @@ cout<<*data<<endl;
     vector<User *> acceptorConnections = activeUsersProvider.getById(data->at("user_to"));
 //    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
 
-    char buffer[2048];
+    char buffer[4096];
     string message = data->dump();
+    int receiveSendStatus;
     for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
     {
-        bzero(buffer, 2048);
-        Helpers::sgets(buffer, 2048, &message);
-        send(userConnection->getSockfd(), buffer, 2048, 0);
+        bzero(buffer, 4096);
+        Helpers::sgets(buffer, 4096, &message);
+
+            receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
+//        do {
+//        } while (receiveSendStatus > 0);
+
     }
     return R"({"status": 200,"data":{}})";
 // TODO: user nemusi byt prihlaseny, teda musim si danu spravu ulozit do suboru a aj do premennej.
