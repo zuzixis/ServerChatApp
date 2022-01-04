@@ -48,3 +48,21 @@ bool Helpers::isNumber(const string &str) {
     }
     return true;
 }
+
+bool Helpers::broadcastToUser(const int userId,string msg) {
+    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
+    vector<User *> acceptorConnections = activeUsersProvider.getById(userId);
+//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
+
+    char buffer[4096];
+    int receiveSendStatus;
+    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
+    {
+        bzero(buffer, 4096);
+        Helpers::sgets(buffer, 4096, &msg);
+
+        receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
+    }
+    // TODO: return value
+    return true;
+}

@@ -29,6 +29,6 @@ string ContactsController::getContacts(const json* data) {
 
 //    return user->getMessages();
     cout << loadedContacts << endl;
-    return R"({"status": 200,"data":)" + loadedContacts.dump() + "}";
+    return R"({"status": 200,"data":)" + (!loadedContacts.empty() ? loadedContacts.dump() : "[]") + "}";
 //    return loadedMessages;
 }

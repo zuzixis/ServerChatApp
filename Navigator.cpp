@@ -30,6 +30,8 @@ string Navigator::redirect(const string &action, json &data) {
             return this->requestsController->getContactRequests(&data);
         } else if (action == "CONFIRMATION_CONTACT_REQUEST") {
             return this->requestsController->confirmationContactRequest(&data);
+        } else if (action == "REJECT_CONTACT_REQUEST") {
+            return this->requestsController->rejectContactRequest(&data);
         } else if (action == "SEND_MESSAGE") {
             return this->messageController->sendMessage(&data);
         } else if (action == "SEND_FILE") {

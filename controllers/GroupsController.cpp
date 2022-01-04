@@ -30,7 +30,7 @@ string GroupsController::getGroups(const json *data) {
         x = loadedGroupId["group_id"];
         groupFiltersString += ("{\"id\":" + to_string(x) + "},");
     }
-    groupFiltersString = groupFiltersString.substr(0, groupFiltersString.size()-1);
+    groupFiltersString = groupFiltersString.substr(0, groupFiltersString.size() - 1);
     groupFiltersString += "]}";
 
     json groupFilters = json::parse(groupFiltersString);
@@ -42,5 +42,5 @@ string GroupsController::getGroups(const json *data) {
 
 //    return user->getMessages();
     cout << loadedGroups << endl;
-    return R"({"status": 200,"data":)" + loadedGroups.dump() + "}";
+    return R"({"status": 200,"data":)" + (!loadedGroups.empty() ? loadedGroups.dump() : "[]") + "}";
 }

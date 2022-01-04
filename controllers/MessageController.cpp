@@ -3,8 +3,8 @@
 //
 
 #include "MessageController.h"
-#include "../JsonReader.h"
-#include "../Helpers.h"
+#include "JsonReader.h"
+#include "Helpers.h"
 
 MessageController::MessageController() {
 
@@ -16,13 +16,15 @@ MessageController::~MessageController() {
 
 string MessageController::sendMessage(json *data) {
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-    int from = activeUsersProvider.getActualUserId();
 
     // Idem vytvorit spravu, ulozit ju do suboru a neskor ju poslem klientom
 
     if (!data->contains("message") && (!data->contains("user_to") || !data->contains("group_to"))) {
         return R"({"status": 422,"data":{}})";
     }
+
+    int userFrom = activeUsersProvider.getActualUserId();
+    int userTo = activeUsersProvider.getActualUserId();
 
     json loadedMessages;
     JsonReader::read("database/messages.json", {}, loadedMessages);
@@ -35,7 +37,7 @@ string MessageController::sendMessage(json *data) {
     }
 
 
-    (*data)["user_from"] = from;
+    (*data)["user_from"] = userFrom;
     // TODO: dories status a sent_at
     (*data)["status"] = "";
     (*data)["sent_at"] = "";
@@ -55,22 +57,9 @@ cout<<*data<<endl;
     ofstream file("database/messages.json");
     file << loadedMessages;
     file.close();
-    vector<User *> acceptorConnections = activeUsersProvider.getById(data->at("user_to"));
-//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
 
-    char buffer[4096];
-    string message = data->dump();
-    int receiveSendStatus;
-    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
-    {
-        bzero(buffer, 4096);
-        Helpers::sgets(buffer, 4096, &message);
+    Helpers::broadcastToUser(userTo, data->dump());
 
-            receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
-//        do {
-//        } while (receiveSendStatus > 0);
-
-    }
     return R"({"status": 200,"data":{}})";
 // TODO: user nemusi byt prihlaseny, teda musim si danu spravu ulozit do suboru a aj do premennej.
 //  V subore budu vsetky spravy aj s priznakom, ci uz boli precitane
@@ -103,6 +92,6 @@ json MessageController::getConversation(const json *data) {
 
 //    return user->getMessages();
     cout << loadedMessages << endl;
-    return R"({"status": 200,"data":)" + loadedMessages.dump() + "}";
+    return R"({"status": 200,"data":)" + (!loadedMessages.empty() ? loadedMessages.dump() : "[]") + "}";
 //    return loadedMessages;
 }

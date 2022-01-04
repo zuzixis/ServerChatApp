@@ -15,118 +15,98 @@ string RequestsController::askForRequestsContact(const json *data) {
     int userFrom = activeUsersProvider.getActualUserId();
     int userTo = data->at("user_to");
 
+    if (!User::exists(userTo) || Contact::exists(userFrom, userTo)) {
+        return R"({"status": 400,"data":{}})";
+    }
     json filters = json::parse(
-            "{\"or\":"s + "[{\"and\":{\"user_1\":" + to_string(userFrom) + ",\"user_2\":" + to_string(userTo) +
-            "}},{\"and\":{\"user_2\":" +
-            to_string(userFrom) + ",\"user_1\":" + to_string(userTo) + "}}]}");
+            "{\"or\":"s + "[{\"and\":{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) +
+            "}},{\"and\":{\"user_to\":" +
+            to_string(userFrom) + ",\"user_from\":" + to_string(userTo) + "}}]}");
 
-    json loadedContacts;
-    JsonReader::read("database/contacts.json", filters, loadedContacts);
+    json loadedRequests;
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
-    if(!loadedContacts.empty()){
+    if (!loadedRequests.empty()) {
         return R"({"status": 400,"data":{}})";
     }
 
     json newRequest;
-    newRequest["user_1"] = userFrom;
-    newRequest["user_2"] = userTo;
-    newRequest["status"] = "waiting";
+    newRequest["user_from"] = userFrom;
+    newRequest["user_to"] = userTo;
+//    newRequest["status"] = "waiting";
 
-    JsonReader::read("database/contacts.json", {}, loadedContacts);
-    loadedContacts.push_back(newRequest);
+    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
+    loadedRequests.push_back(newRequest);
 
-    ofstream file("database/contacts.json");
-    file << loadedContacts;
+    ofstream file("database/contact_requests.json");
+    file << loadedRequests;
     file.close();
 
-    vector<User *> acceptorConnections = activeUsersProvider.getById(data->at("user_to"));
-//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
-
-    char buffer[4096];
-    string message = data->dump();
-    int receiveSendStatus;
-    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
-    {
-        bzero(buffer, 4096);
-        Helpers::sgets(buffer, 4096, &message);
-
-        receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
-    }
+    Helpers::broadcastToUser(userTo, data->dump());
 
     return R"({"status": 200,"data":{}})";
 
-//    return "false";
 }
 
 string RequestsController::getContactRequests(const json *data) {
     cout << *data << endl;
     int userId = ActiveUsersProvider::getInstance().getActualUserId();
-        // {"and":{or:{x:1,y:2},status:waiting}}
+    // {"and":{or:{x:1,y:2},status:waiting}}
     json filters = json::parse(
-            R"({"and":{"or":)"s + "{\"user_1\":" + to_string(userId) + ",\"user_2\":" + to_string(userId) +
-            R"(},"status":"waiting"})");
+            R"({"or":)"s + "{\"user_from\":" + to_string(userId) + ",\"user_to\":" + to_string(userId) + "}}");
 
     json loadedRequests;
-    JsonReader::read("database/contacts.json", filters, loadedRequests);
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
     cout << loadedRequests << endl;
-    return R"({"status": 200,"data":)" + loadedRequests.dump() + "}";
+    return R"({"status": 200,"data":)" + (!loadedRequests.empty() ? loadedRequests.dump() : "[]") + "}";
 }
 
 string RequestsController::confirmationContactRequest(const json *data) {
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-    int userFrom = activeUsersProvider.getActualUserId();
-    int userTo = data->at("user_to");
+    int userTo = activeUsersProvider.getActualUserId();
+    int userFrom = data->at("user_from");
+
 
     json filters = json::parse(
-            "{\"or\":"s + "[{\"and\":{\"user_1\":" + to_string(userFrom) + ",\"user_2\":" + to_string(userTo) +
-            "}},{\"and\":{\"user_2\":" +
-            to_string(userFrom) + ",\"user_1\":" + to_string(userTo) + "}}]}");
+            "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
-    json loadedContacts;
-    JsonReader::read("database/contacts.json", filters, loadedContacts);
+    json loadedRequests;
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
-    if(loadedContacts.empty()){
+    if (loadedRequests.empty()) {
         return R"({"status": 400,"data":{}})";
     }
 
-    json editedRequest = loadedContacts[0];
-    editedRequest["status"] = "confirmed";
+    json loadedContacts;
+//    json editedRequest = loadedContacts[0];
+//    editedRequest["status"] = "confirmed";
 
     JsonReader::read("database/contacts.json", {}, loadedContacts);
+    loadedContacts.push_back(
+            "{\"user_1\":" + to_string(userFrom) + ", \"user_2\":" + to_string(userTo) + "}");
+    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
 
-//    bool found = false;
-    json newJson;
+    json newRequests;
     copy_if(
-            loadedContacts.begin(), loadedContacts.end(),
-            back_inserter(newJson), [&userFrom, &userTo](const json &item) {
-                if (((int) (item["user_1"]) == userFrom && (int) (item["user_2"]) == userTo)||
-                        ((int) (item["user_2"]) == userFrom && (int) (item["user_1"]) == userTo)) {
+            loadedRequests.begin(), loadedRequests.end(),
+            back_inserter(newRequests), [&userFrom, &userTo](const json &item) {
+                if ((int) (item["user_from"]) != userFrom || (int) (item["user_to"]) != userTo) {
                     return true;
                 }
-//                found = true;
                 return false;
             });
-    newJson.push_back(editedRequest);
 
-    ofstream file("database/contacts.json");
-    file << newJson;
-    file.close();
+    ofstream fileContacts("database/contacts.json");
+    fileContacts << loadedContacts;
+    fileContacts.close();
 
-    vector<User *> acceptorConnections = activeUsersProvider.getById(data->at("user_to"));
-//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
+    ofstream fileRequests("database/contact_requests.json");
+    fileRequests << newRequests;
+    fileRequests.close();
 
-    char buffer[4096];
-    string message = editedRequest.dump();
-    int receiveSendStatus;
-    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
-    {
-        bzero(buffer, 4096);
-        Helpers::sgets(buffer, 4096, &message);
-
-        receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
-    }
+    Helpers::broadcastToUser(userFrom, "Potvrdena ziadost s " + to_string(userTo));
 
     return R"({"status": 200,"data":{}})";
 }
@@ -135,57 +115,35 @@ string RequestsController::rejectContactRequest(const json *data) {
 
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-    int userFrom = activeUsersProvider.getActualUserId();
-    int userTo = data->at("user_to");
+    int userTo = activeUsersProvider.getActualUserId();
+    int userFrom = data->at("user_from");
 
     json filters = json::parse(
-            "{\"or\":"s + "[{\"and\":{\"user_1\":" + to_string(userFrom) + ",\"user_2\":" + to_string(userTo) +
-            "}},{\"and\":{\"user_2\":" +
-            to_string(userFrom) + ",\"user_1\":" + to_string(userTo) + "}}]}");
+            "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
-    json loadedContacts;
-    JsonReader::read("database/contacts.json", filters, loadedContacts);
+    json loadedRequests;
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
-    if(loadedContacts.empty()){
+
+    if (loadedRequests.empty()) {
         return R"({"status": 400,"data":{}})";
     }
 
-//    json editedRequest = loadedContacts[0];
-//    editedRequest["status"] = "confirmed";
-
-    JsonReader::read("database/contacts.json", {}, loadedContacts);
-
-//    bool found = false;
-    json newJson;
+    json newRequests;
     copy_if(
-            loadedContacts.begin(), loadedContacts.end(),
-            back_inserter(newJson), [&userFrom, &userTo](const json &item) {
-                if (((int) (item["user_1"]) == userFrom && (int) (item["user_2"]) == userTo)||
-                    ((int) (item["user_2"]) == userFrom && (int) (item["user_1"]) == userTo)) {
+            loadedRequests.begin(), loadedRequests.end(),
+            back_inserter(newRequests), [&userFrom, &userTo](const json &item) {
+                if ((int) (item["user_from"]) != userFrom || (int) (item["user_to"]) != userTo) {
                     return true;
                 }
-//                found = true;
                 return false;
             });
-//    newJson.push_back(editedRequest);
 
-    ofstream file("database/contacts.json");
-    file << newJson;
-    file.close();
+    ofstream fileRequests("database/contact_requests.json");
+    fileRequests << newRequests;
+    fileRequests.close();
 
-    vector<User *> acceptorConnections = activeUsersProvider.getById(data->at("user_to"));
-//    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
-
-    char buffer[4096];
-    string message = "removed request"; // TODO: zmen spravu
-    int receiveSendStatus;
-    for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
-    {
-        bzero(buffer, 4096);
-        Helpers::sgets(buffer, 4096, &message);
-
-        receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
-    }
+    Helpers::broadcastToUser(userFrom, "Zamietnuta ziadost s " + to_string(userTo));
 
     return R"({"status": 200,"data":{}})";
 }

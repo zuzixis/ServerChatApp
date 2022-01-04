@@ -6,16 +6,20 @@
 #include <vector>
 #include <iostream>
 #include "Model.h"
-#include "../json.hpp"
+#include "JsonReader.h"
+#include "json.hpp"
 #include <netinet/in.h>
 
 class Contact;
+
 class Message;
+
 class Group;
 //using json = nlohmann::json;
 using namespace std;
+using json = nlohmann::json;
 
-class User{//; : public Model {
+class User {//; : public Model {
 private:
     int id;
 //    , port;
@@ -45,7 +49,7 @@ public:
 //        cout << json;
 //    }
 
-    User(int id, string name,int sockfd) {
+    User(int id, string name, int sockfd) {
         this->id = id;
         this->name = std::move(name); // todo: move alebo copy?
 //        this->address = address;
@@ -109,6 +113,8 @@ public:
     vector<Contact *> *getContacts() const;
 
     vector<Group *> *getGroups() const;
+
+    static bool exists(const int id);
 
 //    //zdedene metody
 //    Model *get() override;

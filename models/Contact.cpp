@@ -31,3 +31,14 @@ bool Contact::remove(int id) {
     //TODO: implementovať remove
     return false;
 }
+
+bool Contact::exists(const int id1, const int id2) {
+    json filters = json::parse(
+            "{\"or\":"s + "[{\"and\":{\"user_1\":" + to_string(id1) + ",\"user_2\":" + to_string(id2) +
+            "}},{\"and\":{\"user_1\":" +
+            to_string(id2) + ",\"user_2\":" + to_string(id1) + "}}]}");
+
+    json loadedContacts;
+    JsonReader::read("database/contacts.json", filters, loadedContacts);
+    return !loadedContacts.empty();
+}

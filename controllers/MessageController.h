@@ -1,8 +1,8 @@
 #pragma once
 #include <map>
 #include <iostream>
-#include "../providers/ActiveUsersProvider.h"
-#include "../json.hpp"
+#include "providers/ActiveUsersProvider.h"
+#include "json.hpp"
 
 using namespace std;
 using json = nlohmann::json;

@@ -10,7 +10,7 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
     json j;
 
     myfile.open(fileName);
-    cout << myfile.is_open() << endl;
+//    cout << myfile.is_open() << endl;
     if (myfile.is_open()) {
         try {
             myfile >> j;

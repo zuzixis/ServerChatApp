@@ -5,10 +5,10 @@
 #pragma once
 
 #include <vector>
-#include "../models/User.h"
+#include "models/User.h"
 
 using namespace std;
-
+class User;
 class ActiveUsersProvider {
     int actualUserId = 0;
     vector<User *> *activeUsers = new vector<User *>();

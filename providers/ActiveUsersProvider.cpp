@@ -10,7 +10,15 @@ void ActiveUsersProvider::addUser(User *u) {
 
 void ActiveUsersProvider::removeUser(const User *u) {
 
-    remove(this->activeUsers->begin(), this->activeUsers->end(), u);
+    cout << this->activeUsers->size() << endl;
+
+//    std::vector<int>& vec = myNumbers; // use shorter name
+    this->activeUsers->erase(std::remove(this->activeUsers->begin(), this->activeUsers->end(), u),
+                             this->activeUsers->end());
+
+//    vector<User *u>::iterator new_end = remove(this->activeUsers->begin(), this->activeUsers->end(), u);
+    cout << this->activeUsers->size() << endl;
+
     //TODO: skontrolovat
 }
 
@@ -25,8 +33,8 @@ User *ActiveUsersProvider::getLastUser() {
 vector<User *> ActiveUsersProvider::getById(int id) {
     vector<User *> ret; // TODO: netreba alokovat cez new?
 
-    copy_if (this->activeUsers->begin(), this->activeUsers->end(),
-                  back_inserter(ret), [id](User * u){return u->getId() == id;} );
+    copy_if(this->activeUsers->begin(), this->activeUsers->end(),
+            back_inserter(ret), [id](User *u) { return u->getId() == id; });
 
     return ret;
 }

@@ -79,5 +79,30 @@ void User::setGroups(vector<Group *> *groups) {
     User::groups = groups;
 }
 
+bool User::exists(const int id) {
+    json loadedUsers;
+    json filters = json::parse("{\"id\":" + to_string(id) + "}");
+    JsonReader::read("database/users.json", filters, loadedUsers);
+
+    return !loadedUsers.empty();
+//    if (loadedUsers.empty()) {
+//        return R"({"status": 401,"data":{}})";
+//    } else {
+//
+////    map<string, string> xx = loadedUsers.front();
+//
+////        map<string, string> loadedUserMap = *loadedUsers.begin();
+//        // Jozko, odteraz sa odpojis od defaultnej a pojdes cez tento socket!
+////        std::map<std::string, int> m2 = j;
+////    User *user = new User(1, "a", *connFd);
+////        cout << (typeof(loadedUsers[0]["id"])) << endl;
+//        User *user = new User((int) loadedUsers[0]["id"], loadedUsers[0]["name"], *connFd);
+//
+//        this->activeUsersProvider->addUser(user);
+//
+//        return to_string((int) loadedUsers[0]["id"]);
+//    }
+}
+
 
 

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <map>
-#include "../JsonReader.h"
-#include "../models/User.h"
-#include "../providers/ActiveUsersProvider.h"
+#include "JsonReader.h"
+#include "models/User.h"
+#include "providers/ActiveUsersProvider.h"
 #include <iostream>
 
 using namespace std;
