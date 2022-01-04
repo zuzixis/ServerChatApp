@@ -52,8 +52,7 @@ string RequestsController::getContactRequests(const json *data) {
     cout << *data << endl;
     int userId = ActiveUsersProvider::getInstance().getActualUserId();
     // {"and":{or:{x:1,y:2},status:waiting}}
-    json filters = json::parse(
-            R"({"or":)"s + "{\"user_from\":" + to_string(userId) + ",\"user_to\":" + to_string(userId) + "}}");
+    json filters = json::parse("{\"user_to\":" + to_string(userId)+"}");
 
     json loadedRequests;
     JsonReader::read("database/contact_requests.json", filters, loadedRequests);
@@ -64,16 +63,18 @@ string RequestsController::getContactRequests(const json *data) {
     string usersFiltersString = "{\"or\":[";
     int x;
     for (auto loadedRequest: loadedRequests) {
-        if (loadedRequest["user_from"] == userId){
-            x = loadedRequest["user_to"];
-        } else {
+
+//        if (loadedRequest["user_from"] == userId){
+//            x = loadedRequest["user_to"];
+//        } else {
             x = loadedRequest["user_from"];
-        }
+//        }
         usersFiltersString += ("{\"id\":" + to_string(x) + "},");
     }
     usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
     usersFiltersString += "]}";
 
+    json userFilter = json::parse(usersFiltersString);
     JsonReader::read("database/users.json", usersFiltersString, retUsers);
 
     cout << loadedRequests << endl;
