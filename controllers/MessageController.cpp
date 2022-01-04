@@ -19,12 +19,18 @@ string MessageController::sendMessage(json *data) {
 
     // Idem vytvorit spravu, ulozit ju do suboru a neskor ju poslem klientom
 
-    if (!data->contains("message") && (!data->contains("user_to") || !data->contains("group_to"))) {
+    if (!data->contains("message") && ((!data->contains("user_to") && !data->contains("group_to")) ||
+                                       (data->contains("user_to") && data->contains("group_to")))) {
         return R"({"status": 422,"data":{}})";
     }
-
+//    bool toGroup = data->contains("group_to");
     int userFrom = activeUsersProvider.getActualUserId();
-    int userTo = activeUsersProvider.getActualUserId();
+//    int toId;
+//    if (toGroup) {
+//        toId = data->at("group_to");
+//    } else {
+//        toId = data->at("user_to");
+//    }
 
     json loadedMessages;
     JsonReader::read("database/messages.json", {}, loadedMessages);
@@ -35,7 +41,6 @@ string MessageController::sendMessage(json *data) {
         cout << loadedMessages.back().at("id") << endl;
         (*data)["id"] = (int) loadedMessages.back().at("id") + 1;
     }
-
 
     (*data)["user_from"] = userFrom;
     // TODO: dories status a sent_at
@@ -52,17 +57,16 @@ string MessageController::sendMessage(json *data) {
 //                     "    \"sent_at\": \"2021-12-19 21:05:00\"\n"
 //                     "  }";
 
-cout<<*data<<endl;
+    cout << *data << endl;
     loadedMessages.push_back(*data);
     ofstream file("database/messages.json");
     file << loadedMessages;
     file.close();
 
-    Helpers::broadcastToUser(userTo, data->dump());
+//    Helpers::broadcastToUser(userTo, data->dump());
+// TODO: ak posielam spravu do skupiny, chcem poslat upozornenie vsetkym v skupine
 
     return R"({"status": 200,"data":{}})";
-// TODO: user nemusi byt prihlaseny, teda musim si danu spravu ulozit do suboru a aj do premennej.
-//  V subore budu vsetky spravy aj s priznakom, ci uz boli precitane
 }
 
 string MessageController::sendFile(const json *data) {
@@ -76,13 +80,28 @@ string MessageController::sendImage(const json *data) {
 json MessageController::getConversation(const json *data) {
     cout << *data << endl;
     int userFrom = ActiveUsersProvider::getInstance().getActualUserId();
-    int userTo = data->at("user_to");
 
-    json filters = json::parse(
-            "{\"or\":"s + "[{\"and\":{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) +
-            "}},{\"and\":{\"user_from\":" +
-            to_string(userTo) + ",\"user_to\":" + to_string(userFrom) + "}}]}");
+    if ((data->contains("user_to") && data->contains("group_to")) ||
+        (!data->contains("user_to") && !data->contains("group_to"))) {
+        return R"({"status": 422,"data":{"message":"Požiadavka musí obsahovať user_to alebo group_to. Nie však obe naraz!"}})";
+    }
 
+    bool isGroup = data->contains("group_to");
+    int toId;
+    if (isGroup) {
+        toId = data->at("group_to");
+    } else {
+        toId = data->at("user_to");
+    }
+    json filters;
+    if (isGroup) {
+        filters = json::parse("{\"group_to\":" + to_string(toId) + "}");
+    } else {
+        filters = json::parse(
+                "{\"or\":"s + "[{\"and\":{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(toId) +
+                "}},{\"and\":{\"user_from\":" +
+                to_string(toId) + ",\"user_to\":" + to_string(userFrom) + "}}]}");
+    }
 
     json loadedMessages;
     JsonReader::read("database/messages.json", filters, loadedMessages);

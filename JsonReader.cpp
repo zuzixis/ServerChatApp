@@ -12,12 +12,13 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
     myfile.open(fileName);
 //    cout << myfile.is_open() << endl;
     if (myfile.is_open()) {
-        try {
-            myfile >> j;
-        }
-        catch (json::parse_error &ex) {
-            std::cerr << "parse error at byte " << ex.byte << std::endl;
-        }
+//        try {
+        myfile >> j;
+//        }
+//        catch (json::parse_error &ex) {
+//
+//            std::cerr << "parse error at byte " << ex.byte << std::endl;
+//        }
         myfile.close();
     }
 
