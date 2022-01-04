@@ -22,6 +22,7 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
         myfile.close();
     }
 
+    cout << "Filters" << filters << endl;
     copy_if(j.begin(), j.end(),
             back_inserter(filtered), [&filters](const json &item) {
 
@@ -123,7 +124,7 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
             }
         } else {
             for (auto itInner = it->begin(); itInner != it->end(); itInner++) {
-
+                cout << it->dump() << endl << itInner->dump() << endl;
                 if (itInner.key() == "or") {
                     if (!filterOr(itInner.value(), item)) {
                         return false;

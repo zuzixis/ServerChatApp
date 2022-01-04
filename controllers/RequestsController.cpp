@@ -59,7 +59,27 @@ string RequestsController::getContactRequests(const json *data) {
     JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
     cout << loadedRequests << endl;
-    return R"({"status": 200,"data":)" + (!loadedRequests.empty() ? loadedRequests.dump() : "[]") + "}";
+
+    json retUsers;
+    string usersFiltersString = "{\"or\":[";
+    int x;
+    for (auto loadedRequest: loadedRequests) {
+        if (loadedRequest["user_from"] == userId){
+            x = loadedRequest["user_to"];
+        } else {
+            x = loadedRequest["user_from"];
+        }
+        usersFiltersString += ("{\"id\":" + to_string(x) + "},");
+    }
+    usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
+    usersFiltersString += "]}";
+
+    JsonReader::read("database/users.json", usersFiltersString, retUsers);
+
+    cout << loadedRequests << endl;
+    return R"({"status": 200,"data":)" + (!retUsers.empty() ? retUsers.dump() : "[]") + "}";
+
+//    return R"({"status": 200,"data":)" + (!loadedRequests.empty() ? loadedRequests.dump() : "[]") + "}";
 }
 
 string RequestsController::confirmationContactRequest(const json *data) {

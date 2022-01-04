@@ -81,6 +81,12 @@ void *handle_client(int connfd) {
 
                 if (j["action"] == "LOGIN" || j["action"] == "REGISTER" || user != nullptr) {
                     pthread_mutex_lock(&clients_mutex);
+                    if (user != nullptr) {
+                        ActiveUsersProvider::getInstance().setActualUserId(user->getId());
+                    } else {
+                        ActiveUsersProvider::getInstance().setActualUserId(0);
+                    }
+
                     Navigator n(&connfd);
                     string returnFromRedirect = n.redirect(j["action"], j["data"]);
                     pthread_mutex_unlock(&clients_mutex);
@@ -89,13 +95,9 @@ void *handle_client(int connfd) {
                         // vratilo sa id usera
                         /* Add client to the queue and fork thread */
                         user = ActiveUsersProvider::getInstance().getLastUser();
-                        if (user != nullptr) {
-                            ActiveUsersProvider::getInstance().setActualUserId(user->getId());
-                        } else {
-                            ActiveUsersProvider::getInstance().setActualUserId(0);
-                        }
 
-                        output =  R"({"status": 200,"data":{"id":)" + returnFromRedirect + "}}";
+
+                        output = R"({"status": 200,"data":{"id":)" + returnFromRedirect + "}}";
 
 //                        output = R"({"status":200,"data":{}})";
                     } else if (j["action"] == "LOGOUT") {
@@ -116,7 +118,7 @@ void *handle_client(int connfd) {
             }
             Helpers::sgets(buffer, BUFFER_SZ, &output);
 //            final = "";
-                receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
+            receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
 //            do {
 ////                final += buffer;
 //            } while (receiveSendStatus > 0);

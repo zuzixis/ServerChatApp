@@ -25,10 +25,11 @@ string ContactsController::getContacts(const json *data) {
     JsonReader::read("database/contacts.json", filters, loadedContacts);
 
     json retUsers;
+
     string usersFiltersString = "{\"or\":[";
     int x;
     for (auto loadedContact: loadedContacts) {
-        if (loadedContact["user_1"] == userId){
+        if (loadedContact["user_1"] == userId) {
             x = loadedContact["user_2"];
         } else {
             x = loadedContact["user_1"];
@@ -38,8 +39,15 @@ string ContactsController::getContacts(const json *data) {
     usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
     usersFiltersString += "]}";
 
-    JsonReader::read("database/users.json", usersFiltersString, retUsers);
+    cout << usersFiltersString << endl;
 
-    cout << loadedContacts << endl;
+    json usersFilters = json::parse(usersFiltersString);
+    JsonReader::read("database/users.json", usersFilters, retUsers);
+
+// TODO: ideme davat do usera spravy?
+
+//    return user->getMessages();
+    cout << retUsers << endl;
     return R"({"status": 200,"data":)" + (!retUsers.empty() ? retUsers.dump() : "[]") + "}";
+//    return loadedMessages;
 }
