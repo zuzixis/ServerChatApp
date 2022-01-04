@@ -41,6 +41,5 @@ string Navigator::redirect(const string &action, json &data) {
         }
     }
 
-
     return "false";
 }

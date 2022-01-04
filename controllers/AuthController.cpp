@@ -28,7 +28,7 @@ string AuthController::login(const json *data, int *connFd) {
         this->activeUsersProvider->addUser(user);
 
         int id = loadedUsers[0]["id"];
-        return R"({"status": 200,"data":{"id":)" + to_string(id) + "}}";
+        return to_string(id);
     }
 }
 

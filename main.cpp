@@ -95,7 +95,9 @@ void *handle_client(int connfd) {
                             ActiveUsersProvider::getInstance().setActualUserId(0);
                         }
 
-                        output = R"({"status":200,"data":{}})";
+                        output =  R"({"status": 200,"data":{"id":)" + returnFromRedirect + "}}";
+
+//                        output = R"({"status":200,"data":{}})";
                     } else if (j["action"] == "LOGOUT") {
                         pthread_mutex_lock(&clients_mutex);
                         ActiveUsersProvider::getInstance().removeUser(user);
