@@ -33,7 +33,7 @@ string MessageController::sendMessage(json *data) {
 //    }
 
     json loadedMessages;
-    JsonReader::read("database/messages.json", {}, loadedMessages);
+    JsonReader::read("../database/messages.json", {}, loadedMessages);
 
     if (loadedMessages.empty()) {
         (*data)["id"] = 1;
@@ -45,7 +45,7 @@ string MessageController::sendMessage(json *data) {
     (*data)["user_from"] = userFrom;
     // TODO: dories status a sent_at
     (*data)["status"] = "";
-    (*data)["sent_at"] = "";
+    (*data)["created_at"] = Helpers::currentDateTime();
 
 //    string message = "{"
 //                     "    \"id\": 1,\n"
@@ -104,7 +104,7 @@ json MessageController::getConversation(const json *data) {
     }
 
     json loadedMessages;
-    JsonReader::read("database/messages.json", filters, loadedMessages);
+    JsonReader::read("../database/messages.json", filters, loadedMessages);
 
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?

@@ -46,7 +46,7 @@ bool Helpers::isNumber(const string &str) {
     return true;
 }
 
-bool Helpers::broadcastToUser(const int userId,string msg) {
+bool Helpers::broadcastToUser(const int userId, string msg) {
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     vector<User *> acceptorConnections = activeUsersProvider.getById(userId);
 //    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
@@ -67,5 +67,24 @@ bool Helpers::broadcastToUser(const int userId,string msg) {
     return true;
 }
 
+string Helpers::currentDateTime() {
+    time_t now = time(nullptr);
+    struct tm tstruct{};
+    char buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
 
+    return buf;
+}
 
+time_t Helpers::string_to_time_t(string s)
+{
+    struct tm tmp{};
+    time_t t;
+
+    memset(&tmp, 0, sizeof(struct tm));
+    strptime(s.c_str(), "%Y-%m-%d %X", &tmp);
+    t = mktime(&tmp);
+
+    return t;
+}

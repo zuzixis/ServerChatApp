@@ -10,7 +10,7 @@ AuthController::~AuthController() {
 
 string AuthController::login(const json *data, int *connFd) {
     json loadedUsers;
-    JsonReader::read("database/users.json", *data, loadedUsers);
+    JsonReader::read("../database/users.json", *data, loadedUsers);
 
     cout << loadedUsers << endl;
     if (loadedUsers.empty()) {
@@ -40,7 +40,7 @@ string AuthController::logout(const json *data) {
 
 string AuthController::deleteAccount(const json *data) {
     json loadedJson, newJson = json::parse("[]");
-    JsonReader::read("database/users.json", {}, loadedJson);
+    JsonReader::read("../database/users.json", {}, loadedJson);
 
     cout << *data << endl << endl;
     cout << loadedJson << endl << endl;
@@ -67,7 +67,7 @@ string AuthController::deleteAccount(const json *data) {
         fileUsers.close();
 
         loadedJson.clear();
-        JsonReader::read("database/messages.json", {}, loadedJson);
+        JsonReader::read("../database/messages.json", {}, loadedJson);
         newJson.clear();
         copy_if(
                 loadedJson.begin(), loadedJson.end(),
@@ -83,7 +83,7 @@ string AuthController::deleteAccount(const json *data) {
         fileMessages.close();
 
         loadedJson.clear();
-        JsonReader::read("database/contact_requests.json", {}, loadedJson);
+        JsonReader::read("../database/contact_requests.json", {}, loadedJson);
         newJson.clear();
         copy_if(
                 loadedJson.begin(), loadedJson.end(),
@@ -99,7 +99,7 @@ string AuthController::deleteAccount(const json *data) {
         fileRequests.close();
 
         loadedJson.clear();
-        JsonReader::read("database/contacts.json", {}, loadedJson);
+        JsonReader::read("../database/contacts.json", {}, loadedJson);
         newJson.clear();
         copy_if(
                 loadedJson.begin(), loadedJson.end(),
@@ -115,7 +115,7 @@ string AuthController::deleteAccount(const json *data) {
         fileContacts.close();
 
         loadedJson.clear();
-        JsonReader::read("database/group_users.json", {}, loadedJson);
+        JsonReader::read("../database/group_users.json", {}, loadedJson);
         newJson.clear();
         copy_if(
                 loadedJson.begin(), loadedJson.end(),
@@ -138,9 +138,12 @@ string AuthController::deleteAccount(const json *data) {
 
 string AuthController::createAccount(json *data) {
     json loadedUsers;
-    JsonReader::read("database/users.json", {}, loadedUsers);
+    JsonReader::read("../database/users.json", {}, loadedUsers);
     //JsonReader::read("skuska.json", {}, loadedUsers);
 
+    if (!data->contains("name")) {
+        return R"({"status": 422,"data":{"errors":[{"name":"Názov je povinný"}]}})";
+    }
 
     for (auto user: loadedUsers) {
         if (user["name"] == data->at("name")) {

@@ -42,6 +42,8 @@ string Navigator::redirect(const string &action, json &data) {
             return this->userController->search(&data);
         } else if (action == "SEARCH_GROUPS") {
             return this->groupsController->search(&data);
+        } else if (action == "CREATE_GROUP") {
+            return this->groupsController->create(&data);
         }
     }
 

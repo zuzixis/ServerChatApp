@@ -18,7 +18,7 @@ string UserController::search(const json *data) {
     // {or:{x:1,y:2}}
 
     if (!data->contains("word")) {
-        return R"({"status": 422,"data":{"errors":[{"word":"Attribute is required"}]}})";
+        return R"({"status": 422,"data":{"errors":[{"word":"Hľadaný výraz je povinný"}]}})";
     }
 
     string x = data->at("word");
@@ -27,7 +27,7 @@ string UserController::search(const json *data) {
     json filters = json::parse(filtersString);
 
     json loadedUsers;
-    JsonReader::read("database/users.json", filters, loadedUsers);
+    JsonReader::read("../database/users.json", filters, loadedUsers);
 
     json ret;
     copy_if(

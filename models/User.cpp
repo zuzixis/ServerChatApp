@@ -82,7 +82,7 @@ void User::setGroups(vector<Group *> *groups) {
 bool User::exists(const int id) {
     json loadedUsers;
     json filters = json::parse("{\"id\":" + to_string(id) + "}");
-    JsonReader::read("database/users.json", filters, loadedUsers);
+    JsonReader::read("../database/users.json", filters, loadedUsers);
 
     return !loadedUsers.empty();
 //    if (loadedUsers.empty()) {

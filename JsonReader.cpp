@@ -47,6 +47,15 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
                 }
 
             });
+    cout << "filtered" << filtered << endl;
+    if (!filtered.empty() && filtered.begin()->contains("created_at")) {
+        sort(filtered.begin(), filtered.end(), [](json a, json b) {
+            cout << a["created_at"] << "  " << b["created_at"] << endl;
+//            cout << to_string(Helpers::string_to_time_t(
+//                    a["created_at"])) << "  " << to_string(Helpers::string_to_time_t(b["created_at"])) << endl;
+            return Helpers::string_to_time_t(a["created_at"]) < Helpers::string_to_time_t(b["created_at"]);
+        });
+    }
 
     return filtered;
 }
@@ -228,7 +237,7 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
 
 //                cout << (value.length() > 5 && valueMaybeLike == "LIKE:") << endl;
                     if (itInner.value().is_string() && (value.length() > 5 && valueMaybeLike == "LIKE:" &&
-                         (itemValue.find(valueMaybeWord) == string::npos)) ||
+                                                        (itemValue.find(valueMaybeWord) == string::npos)) ||
                         (item[itInner.key()] != itInner.value())) {
                         return false;
                     }

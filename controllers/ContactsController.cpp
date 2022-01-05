@@ -22,7 +22,7 @@ string ContactsController::getContacts(const json *data) {
             "}}");
 
     json loadedContacts;
-    JsonReader::read("database/contacts.json", filters, loadedContacts);
+    JsonReader::read("../database/contacts.json", filters, loadedContacts);
 
     json retUsers;
     if (!loadedContacts.empty()) {
@@ -43,7 +43,7 @@ string ContactsController::getContacts(const json *data) {
         cout << usersFiltersString << endl;
 
         json usersFilters = json::parse(usersFiltersString);
-        JsonReader::read("database/users.json", usersFilters, retUsers);
+        JsonReader::read("../database/users.json", usersFilters, retUsers);
     }
 
 // TODO: ideme davat do usera spravy?
