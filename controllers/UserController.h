@@ -1,19 +1,21 @@
 #pragma once
+
 #include <map>
 #include <iostream>
 #include "json.hpp"
 #include "JsonReader.h"
+#include "Helpers.h"
 #include "providers/ActiveUsersProvider.h"
 
 using namespace std;
 using json = nlohmann::json;
 
-class GroupsController {
-
+class UserController {
 public:
-    GroupsController();
-    ~GroupsController();
+    UserController();
 
-    string getGroups(const json* data);
-    string search(const json* data);
+    ~UserController();
+
+    string search(const json *data);
 };
+

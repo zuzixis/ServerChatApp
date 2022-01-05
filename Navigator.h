@@ -9,6 +9,7 @@
 #include "controllers/GroupsController.h"
 #include "controllers/MessageController.h"
 #include "controllers/RequestsController.h"
+#include "controllers/UserController.h"
 #include "providers/ActiveUsersProvider.h"
 
 using namespace std;
@@ -23,6 +24,7 @@ private:
     GroupsController *groupsController;
     MessageController *messageController;
     RequestsController *requestsController;
+    UserController *userController;
     ActiveUsersProvider *activeUsersProvider;
 
 public:
@@ -36,6 +38,7 @@ public:
         groupsController = new GroupsController();
         requestsController = new RequestsController();
         messageController = new MessageController();
+        userController = new UserController();
     }
 
     ~Navigator() {

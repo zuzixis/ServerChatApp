@@ -38,6 +38,10 @@ string Navigator::redirect(const string &action, json &data) {
             return this->messageController->sendFile(&data);
         } else if (action == "SEND_IMAGE") {
             return this->messageController->sendImage(&data);
+        } else if (action == "SEARCH_USERS") {
+            return this->userController->search(&data);
+        } else if (action == "SEARCH_GROUPS") {
+            return this->groupsController->search(&data);
         }
     }
 

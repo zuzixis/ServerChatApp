@@ -30,7 +30,7 @@ add_executable(
         Navigator.cpp Navigator.h
         Helpers.cpp Helpers.h
         controllers/RequestsController.cpp
-        controllers/RequestsController.h providers/ActiveUsersProvider.cpp providers/ActiveUsersProvider.h)
+        controllers/RequestsController.h providers/ActiveUsersProvider.cpp providers/ActiveUsersProvider.h controllers/UserController.cpp controllers/UserController.h)
 
 
 

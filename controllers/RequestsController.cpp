@@ -52,7 +52,7 @@ string RequestsController::getContactRequests(const json *data) {
     cout << *data << endl;
     int userId = ActiveUsersProvider::getInstance().getActualUserId();
     // {"and":{or:{x:1,y:2},status:waiting}}
-    json filters = json::parse("{\"user_to\":" + to_string(userId)+"}");
+    json filters = json::parse("{\"user_to\":" + to_string(userId) + "}");
 
     json loadedRequests;
     JsonReader::read("database/contact_requests.json", filters, loadedRequests);
@@ -60,27 +60,28 @@ string RequestsController::getContactRequests(const json *data) {
     cout << loadedRequests << endl;
 
     json retUsers;
-    string usersFiltersString = "{\"or\":[";
-    int x;
-    for (auto loadedRequest: loadedRequests) {
+    if (!loadedRequests.empty()) {
+
+        string usersFiltersString = "{\"or\":[";
+        int x;
+        for (auto loadedRequest: loadedRequests) {
 
 //        if (loadedRequest["user_from"] == userId){
 //            x = loadedRequest["user_to"];
 //        } else {
             x = loadedRequest["user_from"];
 //        }
-        usersFiltersString += ("{\"id\":" + to_string(x) + "},");
+            usersFiltersString += ("{\"id\":" + to_string(x) + "},");
+        }
+        usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
+        usersFiltersString += "]}";
+
+        json userFilter = json::parse(usersFiltersString);
+        JsonReader::read("database/users.json", userFilter, retUsers);
     }
-    usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
-    usersFiltersString += "]}";
 
-    json userFilter = json::parse(usersFiltersString);
-    JsonReader::read("database/users.json", usersFiltersString, retUsers);
-
-    cout << loadedRequests << endl;
+    cout << retUsers << endl;
     return R"({"status": 200,"data":)" + (!retUsers.empty() ? retUsers.dump() : "[]") + "}";
-
-//    return R"({"status": 200,"data":)" + (!loadedRequests.empty() ? loadedRequests.dump() : "[]") + "}";
 }
 
 string RequestsController::confirmationContactRequest(const json *data) {
@@ -88,7 +89,6 @@ string RequestsController::confirmationContactRequest(const json *data) {
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     int userTo = activeUsersProvider.getActualUserId();
     int userFrom = data->at("user_from");
-
 
     json filters = json::parse(
             "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
@@ -105,8 +105,9 @@ string RequestsController::confirmationContactRequest(const json *data) {
 //    editedRequest["status"] = "confirmed";
 
     JsonReader::read("database/contacts.json", {}, loadedContacts);
-    loadedContacts.push_back(
-            "{\"user_1\":" + to_string(userFrom) + ", \"user_2\":" + to_string(userTo) + "}");
+
+    loadedContacts.push_back(json::parse(
+            "{\"user_1\":" + to_string(userFrom) + ", \"user_2\":" + to_string(userTo) + "}"));
     JsonReader::read("database/contact_requests.json", {}, loadedRequests);
 
     json newRequests;

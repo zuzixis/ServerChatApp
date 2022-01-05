@@ -25,24 +25,26 @@ string ContactsController::getContacts(const json *data) {
     JsonReader::read("database/contacts.json", filters, loadedContacts);
 
     json retUsers;
+    if (!loadedContacts.empty()) {
 
-    string usersFiltersString = "{\"or\":[";
-    int x;
-    for (auto loadedContact: loadedContacts) {
-        if (loadedContact["user_1"] == userId) {
-            x = loadedContact["user_2"];
-        } else {
-            x = loadedContact["user_1"];
+        string usersFiltersString = "{\"or\":[";
+        int x;
+        for (auto loadedContact: loadedContacts) {
+            if (loadedContact["user_1"] == userId) {
+                x = loadedContact["user_2"];
+            } else {
+                x = loadedContact["user_1"];
+            }
+            usersFiltersString += ("{\"id\":" + to_string(x) + "},");
         }
-        usersFiltersString += ("{\"id\":" + to_string(x) + "},");
+        usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
+        usersFiltersString += "]}";
+
+        cout << usersFiltersString << endl;
+
+        json usersFilters = json::parse(usersFiltersString);
+        JsonReader::read("database/users.json", usersFilters, retUsers);
     }
-    usersFiltersString = usersFiltersString.substr(0, usersFiltersString.size() - 1);
-    usersFiltersString += "]}";
-
-    cout << usersFiltersString << endl;
-
-    json usersFilters = json::parse(usersFiltersString);
-    JsonReader::read("database/users.json", usersFilters, retUsers);
 
 // TODO: ideme davat do usera spravy?
 
