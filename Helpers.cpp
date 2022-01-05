@@ -1,7 +1,4 @@
-//
-// Created by Jakub Rončák on 26/12/2021.
-//
-
+#include <sys/socket.h>
 #include "Helpers.h"
 
 string Helpers::gen_random(const int len) {
@@ -54,6 +51,8 @@ bool Helpers::broadcastToUser(const int userId,string msg) {
     vector<User *> acceptorConnections = activeUsersProvider.getById(userId);
 //    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
 
+
+
     char buffer[4096];
     int receiveSendStatus;
     for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
@@ -63,6 +62,10 @@ bool Helpers::broadcastToUser(const int userId,string msg) {
 
         receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
     }
+
     // TODO: return value
     return true;
 }
+
+
+

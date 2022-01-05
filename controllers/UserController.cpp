@@ -31,7 +31,7 @@ string UserController::search(const json *data) {
     json filters = json::parse(filtersString);
 
     json loadedUsers;
-    JsonReader::read("database/users.json", filters, loadedUsers);
+    JsonReader::read("../database/users.json", filters, loadedUsers);
 
     // {"or":[{"id":1},{"id":2}]}
 

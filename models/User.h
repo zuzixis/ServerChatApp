@@ -8,7 +8,7 @@
 #include "Model.h"
 #include "JsonReader.h"
 #include "json.hpp"
-#include <netinet/in.h>
+//#include <netinet/in.h>
 
 class Contact;
 

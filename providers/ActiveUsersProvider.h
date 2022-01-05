@@ -16,6 +16,8 @@ class ActiveUsersProvider {
 //    static ActiveUsersProvider *instance = {};
     ActiveUsersProvider() {}
 
+
+
 public:
     static ActiveUsersProvider &getInstance() {
         static ActiveUsersProvider theInstance;

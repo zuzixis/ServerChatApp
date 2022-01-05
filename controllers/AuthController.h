@@ -5,6 +5,8 @@
 #include "models/User.h"
 #include "providers/ActiveUsersProvider.h"
 #include <iostream>
+#include <string>
+
 
 using namespace std;
 
@@ -24,3 +26,7 @@ public:
 
     static string createAccount(json *data);
 };
+
+
+
+

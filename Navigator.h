@@ -27,6 +27,8 @@ private:
     UserController *userController;
     ActiveUsersProvider *activeUsersProvider;
 
+
+
 public:
     Navigator(int* connfd) {
         this->connfd = connfd;
@@ -49,6 +51,10 @@ public:
 //        delete activeUsersProvider;
     }
 
+
+
+
     string redirect(const string &action, json &data);
 };
+
 

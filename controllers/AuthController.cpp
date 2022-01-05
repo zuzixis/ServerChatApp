@@ -10,8 +10,9 @@ AuthController::~AuthController() {
 
 string AuthController::login(const json *data, int *connFd) {
     json loadedUsers;
-    JsonReader::read("database/users.json", *data, loadedUsers);
+    JsonReader::read("../database/users.json", *data, loadedUsers);
 
+    cout << loadedUsers << endl;
     if (loadedUsers.empty()) {
         return R"({"status": 401,"data":{}})";
     } else {
@@ -39,7 +40,7 @@ string AuthController::logout(const json *data) {
 
 string AuthController::deleteAccount(const json *data) {
     json loadedUsers, newJson = json::parse("[]");
-    JsonReader::read("database/users.json", {}, loadedUsers);
+    JsonReader::read("../database/users.json", {}, loadedUsers);
 
     cout << *data << endl << endl;
     cout << loadedUsers << endl << endl;
@@ -61,7 +62,7 @@ string AuthController::deleteAccount(const json *data) {
     cout << newJson << endl << endl;
 
     if (found) {
-        ofstream file("database/users.json");
+        ofstream file("../database/users.json");
         file << newJson;
         file.close();
         return R"({"status": 200,"data":{}})";
@@ -70,11 +71,15 @@ string AuthController::deleteAccount(const json *data) {
         return R"({"status": 400,"data":{}})"; // TODO: aka tu ma byt chyba?
     }
 
+
 }
+
 
 string AuthController::createAccount(json *data) {
     json loadedUsers;
-    JsonReader::read("database/users.json", {}, loadedUsers);
+    JsonReader::read("../database/users.json", {}, loadedUsers);
+    //JsonReader::read("skuska.json", {}, loadedUsers);
+
 
     for (auto user: loadedUsers) {
         if (user["name"] == data->at("name")) {
@@ -90,7 +95,7 @@ string AuthController::createAccount(json *data) {
     }
 
     loadedUsers.push_back(*data);
-    ofstream file("database/users.json");
+    ofstream file("../database/users.json");
     file << loadedUsers;
     file.close();
     return R"({"status": 200,"data":{}})";

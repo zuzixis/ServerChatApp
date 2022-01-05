@@ -6,6 +6,8 @@
 
 json JsonReader::read(const string &fileName, const json &filters, json &filtered) {
 
+    cout << filters << endl;
+
     ifstream myfile;
     json j;
 
@@ -64,6 +66,9 @@ bool JsonReader::filterOr(const json &filters, const json &item) {
                 }
             } else {
                 // operacia
+                cout << it.key() << endl;
+                cout << item << endl;
+
                 if (!item.contains(it.key())) {
                     throw logic_error("Filtered key is not in json!");
                 }

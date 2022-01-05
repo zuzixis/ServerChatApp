@@ -22,6 +22,8 @@ void ActiveUsersProvider::removeUser(const User *u) {
     //TODO: skontrolovat
 }
 
+
+
 const vector<User *> *ActiveUsersProvider::getActiveUsers() {
     return activeUsers;
 }
