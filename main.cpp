@@ -154,8 +154,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    string ip = "158.193.128.160";
-
+    string ip = "127.0.0.1";
 
     int port = atoi(argv[1]);
     int option = 1;
@@ -164,9 +163,6 @@ int main(int argc, char **argv) {
     struct sockaddr_in cli_addr;
     int optval;
     socklen_t optlen = sizeof(optval);
-
-//    thread();
-
 
     /* Socket settings */
     listenfd = socket(AF_INET, SOCK_STREAM, 0);

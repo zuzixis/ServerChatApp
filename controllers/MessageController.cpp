@@ -33,7 +33,7 @@ string MessageController::sendMessage(json *data) {
 //    }
 
     json loadedMessages;
-    JsonReader::read("../database/messages.json", {}, loadedMessages);
+    JsonReader::read("database/messages.json", {}, loadedMessages);
 
     if (loadedMessages.empty()) {
         (*data)["id"] = 1;
@@ -59,7 +59,7 @@ string MessageController::sendMessage(json *data) {
 
     cout << *data << endl;
     loadedMessages.push_back(*data);
-    ofstream file("../database/messages.json");
+    ofstream file("database/messages.json");
     file << loadedMessages;
     file.close();
 
@@ -104,7 +104,7 @@ json MessageController::getConversation(const json *data) {
     }
 
     json loadedMessages;
-    JsonReader::read("../database/messages.json", filters, loadedMessages);
+    JsonReader::read("database/messages.json", filters, loadedMessages);
 
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?
