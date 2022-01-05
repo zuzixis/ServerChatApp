@@ -91,22 +91,28 @@ bool JsonReader::filterOr(const json &filters, const json &item) {
                     if (!item.contains(itInner.key())) {
                         throw logic_error("Filtered key is not in json!");
                     }
-                    string value = itInner.value();
-                    string itemValue = item[itInner.key()];
-                    string valueMaybeLike = value.substr(0, 5);
+                    string value;
+                    string itemValue;
+                    string valueMaybeLike;
                     string valueMaybeWord;
+                    if (itInner.value().is_string()) {
+//                cout << "it.value()"<<itInner.value() << endl;
+                        value = itInner.value().get<string>();
+                        itemValue = item[itInner.key()];
+                        valueMaybeLike = value.substr(0, 5);
+                        if (value.length() > 5) {
+                            valueMaybeWord = value.substr(5);
+                        } else {
+                            valueMaybeWord = "";
+                        }
 
-                    if (value.length() > 5) {
-                        valueMaybeWord = value.substr(5);
-                    } else {
-                        valueMaybeWord = "";
                     }
-
-                    if ((value.length() > 5 && valueMaybeLike == "LIKE:" &&
-                         (itemValue.find(valueMaybeWord) != string::npos)) ||
-                        (item[itInner.key()] == itInner.value())) {
+                    if (itInner.value().is_string() && value.length() > 5 && valueMaybeLike == "LIKE:") {
+                        if (itemValue.find(valueMaybeWord) != string::npos) {
+                            return true;
+                        }
+                    } else if (item[itInner.key()] == itInner.value()) {
                         return true;
-
                     }
                 }
             }
@@ -135,19 +141,28 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
                 if (!item.contains(it.key())) {
                     throw logic_error("Filtered key is not in json!");
                 }
-                string value = it.value();
-                string itemValue = item[it.key()];
-                string valueMaybeLike = value.substr(0, 5);
-                string valueMaybeWord;
 
-                if (value.length() > 5) {
-                    valueMaybeWord = value.substr(5);
-                } else {
-                    valueMaybeWord = "";
+                string value;
+                string itemValue;
+                string valueMaybeLike;
+                string valueMaybeWord;
+                if (it.value().is_string()) {
+//                cout << "it.value()"<<it.value() << endl;
+                    value = it.value().get<string>();
+                    itemValue = item[it.key()];
+                    valueMaybeLike = value.substr(0, 5);
+                    if (value.length() > 5) {
+                        valueMaybeWord = value.substr(5);
+                    } else {
+                        valueMaybeWord = "";
+                    }
+
                 }
 
-                cout << (value.length() > 5 && valueMaybeLike == "LIKE:") << endl;
-                if (value.length() > 5 && valueMaybeLike == "LIKE:") {
+
+
+//                cout << (value.length() > 5 && valueMaybeLike == "LIKE:") << endl;
+                if (it.value().is_string() && value.length() > 5 && valueMaybeLike == "LIKE:") {
                     if (itemValue.find(valueMaybeWord) == string::npos) {
                         return false;
                     }
@@ -192,18 +207,27 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
                     if (!item.contains(itInner.key())) {
                         throw logic_error("Filtered key is not in json!");
                     }
-                    string value = itInner.value();
-                    string itemValue = item[itInner.key()];
-                    string valueMaybeLike = value.substr(0, 5);
+                    string value;
+                    string itemValue;
+                    string valueMaybeLike;
                     string valueMaybeWord;
+                    if (itInner.value().is_string()) {
+//                cout << "it.value()"<<it.value() << endl;
+                        value = itInner.value().get<string>();
+                        itemValue = item[itInner.key()];
+                        valueMaybeLike = value.substr(0, 5);
+                        if (value.length() > 5) {
+                            valueMaybeWord = value.substr(5);
+                        } else {
+                            valueMaybeWord = "";
+                        }
 
-                    if (value.length() > 5) {
-                        valueMaybeWord = value.substr(5);
-                    } else {
-                        valueMaybeWord = "";
                     }
 
-                    if ((value.length() > 5 && valueMaybeLike == "LIKE:" &&
+
+
+//                cout << (value.length() > 5 && valueMaybeLike == "LIKE:") << endl;
+                    if (itInner.value().is_string() && (value.length() > 5 && valueMaybeLike == "LIKE:" &&
                          (itemValue.find(valueMaybeWord) == string::npos)) ||
                         (item[itInner.key()] != itInner.value())) {
                         return false;
