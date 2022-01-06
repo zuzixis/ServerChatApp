@@ -35,7 +35,7 @@ string RequestsController::askForRequestsContact(const json *data) {
     JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
     if (!loadedRequests.empty()) {
-        return R"({"status": 400,"data":{"msg":""}})";
+        return R"({"status": 400,"data":{"msg":"Požiadavka uŽ existuje"}})";
 //        return R"({"status": 400,"data":{}})";
     }
 
@@ -115,7 +115,7 @@ string RequestsController::confirmationContactRequest(const json *data) {
     JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
     if (loadedRequests.empty()) {
-        return R"({"status": 400,"data":{"msg":""}})";
+        return R"({"status": 400,"data":{"msg":"Nikto s takýmto id vám neposlal požiadavku."}})";
     }
 
     json loadedContacts;
