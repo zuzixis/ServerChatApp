@@ -21,7 +21,6 @@ string UserController::search(const json *data) {
         return R"({"status": 422,"data":{"errors":[{"word":"Hľadaný výraz je povinný"}]}})";
     }
 
-
     string x = data->at("word");
     string filtersString = R"({"name":"LIKE:)" + x + "\"}";
 
@@ -34,7 +33,7 @@ string UserController::search(const json *data) {
     copy_if(
             loadedUsers.begin(), loadedUsers.end(),
             back_inserter(ret), [&userId](const json &item) {
-                return (int) (item["id"]) == userId;
+                return (int) (item["id"]) != userId;
             });
 
     cout << ret << endl;

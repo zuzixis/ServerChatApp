@@ -25,11 +25,13 @@ void Group::setCreatedAt(const string &createdAt) {
 }
 
 Model *Group::get() {
-    json loadedUsers;
-    json filters = json::parse("{\"id\":" + to_string(id) + "}");
-    JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedUsers);
 
-    return loadedUsers;
+    return nullptr;
+//    json loadedUsers;
+//    json filters = json::parse("{\"id\":" + to_string(id) + "}");
+//    JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedUsers);
+//
+//    return loadedUsers;
 }
 
 bool Group::save() {
