@@ -23,7 +23,7 @@ string RequestsController::askForRequestsContact(const json *data) {
     }
 
     if (Contact::exists(userFrom, userTo)) {
-        return R"({"status": 400,"data":{"msg":"Takéhoto uživateľa nemáte v kontaktoch."}})";
+        return R"({"status": 400,"data":{"msg":"Takéhoto uživateľa uz mate v kontaktoch."}})";
     }
 
     json filters = json::parse(
@@ -51,9 +51,9 @@ string RequestsController::askForRequestsContact(const json *data) {
     file << loadedRequests;
     file.close();
 
-    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":" + data->dump() + "}";
-
-    Helpers::broadcastToUser(userTo, broadJson.dump());
+//    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":" + data->dump() + "}";
+//
+//    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
 
@@ -143,10 +143,15 @@ string RequestsController::confirmationContactRequest(const json *data) {
     fileContacts.close();
 
     ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
-    fileRequests << (!newRequests.empty() ? newRequests : "[]");
+    fileRequests << newRequests;
     fileRequests.close();
 
-    Helpers::broadcastToUser(userFrom, "Potvrdena ziadost s " + to_string(userTo));
+    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Potvrdena ziadost s " + to_string(userTo)
+                     + "\"}}";
+
+    Helpers::broadcastToUser(userTo, broadJson.dump());
+
+//    Helpers::broadcastToUser(userFrom, "Potvrdena ziadost s " + to_string(userTo));
 
     return R"({"status": 200,"data":{}})";
 }
@@ -187,10 +192,13 @@ string RequestsController::rejectContactRequest(const json *data) {
             });
 
     ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
-    fileRequests << (!newRequests.empty() ? newRequests : "[]");
+    fileRequests << newRequests;
     fileRequests.close();
 
-    Helpers::broadcastToUser(userFrom, "Zamietnuta ziadost s " + to_string(userTo));
+    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Zamietnuta ziadost s " + to_string(userTo)
+                     + "\"}}";
+
+    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
 }

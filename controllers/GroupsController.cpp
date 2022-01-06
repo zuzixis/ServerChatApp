@@ -151,7 +151,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
             });
 
     ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
-    fileGU << (!newJson.empty() ? newJson : "[]");
+    fileGU << newJson;
     fileGU.close();
 
     return R"({"status": 200,"data":{}})";
@@ -250,7 +250,7 @@ string GroupsController::removeGroup(const json *data) {
             });
 
     ofstream file(Helpers::DATABASE_GROUP);
-    file << (!newJson.empty() ? newJson : "[]");
+    file << newJson;
     file.close();
 
     actualJson.clear();
@@ -263,7 +263,7 @@ string GroupsController::removeGroup(const json *data) {
             });
 
     ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
-    fileGU << (!newJson.empty() ? newJson : "[]");
+    fileGU << newJson;
     fileGU.close();
 
     return R"({"status": 200,"data":{}})";

@@ -72,7 +72,7 @@ string AuthController::deleteAccount(const json *data) {
 
     if (found) {
         ofstream fileUsers(Helpers::DATABASE_USERS);
-        fileUsers << (!newJson.empty() ? newJson : "[]");
+        fileUsers << newJson;
         fileUsers.close();
 
         loadedJson.clear();
@@ -88,7 +88,7 @@ string AuthController::deleteAccount(const json *data) {
                 });
 
         ofstream fileMessages(Helpers::DATABASE_MESSAGES);
-        fileMessages << (!newJson.empty() ? newJson : "[]");
+        fileMessages << newJson;
         fileMessages.close();
 
         loadedJson.clear();
@@ -104,7 +104,7 @@ string AuthController::deleteAccount(const json *data) {
                 });
 
         ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
-        fileRequests << (!newJson.empty() ? newJson : "[]");
+        fileRequests << newJson;
         fileRequests.close();
 
         loadedJson.clear();
@@ -120,7 +120,7 @@ string AuthController::deleteAccount(const json *data) {
                 });
 
         ofstream fileContacts(Helpers::DATABASE_CONTACTS);
-        fileContacts << (!newJson.empty() ? newJson : "[]");
+        fileContacts << newJson;
         fileContacts.close();
 
         loadedJson.clear();
@@ -136,7 +136,7 @@ string AuthController::deleteAccount(const json *data) {
                 });
 
         ofstream fileGroupUsers(Helpers::DATABASE_GROUP_USERS);
-        fileGroupUsers << (!newJson.empty() ? newJson : "[]");
+        fileGroupUsers << newJson;
         fileGroupUsers.close();
 
         return R"({"status": 200,"data":{}})";

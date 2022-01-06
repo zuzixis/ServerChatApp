@@ -51,8 +51,6 @@ bool Helpers::broadcastToUser(const int userId, string msg) {
     vector<User *> acceptorConnections = activeUsersProvider.getById(userId);
 //    // TODO: activeUsersProvider sa moze skor vola ActiveConnectionsProvider a tam by bol user a fd
 
-
-
     char buffer[4096];
     int receiveSendStatus;
     for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
