@@ -23,14 +23,16 @@ string MessageController::sendMessage(json *data) {
                                        (data->contains("user_to") && data->contains("group_to")))) {
         return R"({"status": 422,"data":{}})";
     }
-//    bool toGroup = data->contains("group_to");
+    bool toGroup = data->contains("group_to");
     int userFrom = activeUsersProvider.getActualUserId();
 //    int toId;
-//    if (toGroup) {
+    if (toGroup) {
 //        toId = data->at("group_to");
-//    } else {
+        (*data)["user_to"] = "null";
+    } else {
 //        toId = data->at("user_to");
-//    }
+        (*data)["group_to"] = "null";
+    }
 
     json loadedMessages;
     JsonReader::read(Helpers::DATABASE_MESSAGES, {}, loadedMessages);
@@ -104,33 +106,24 @@ json MessageController::getConversation(const json *data) {
                 to_string(toId) + ",\"user_to\":" + to_string(userFrom) + "}}]}");
     }
 
+    cout << "filters" << filters << endl;
     json loadedMessages;
     JsonReader::read(Helpers::DATABASE_MESSAGES, filters, loadedMessages);
 
-    json users;//, userFilters;
+    json users;
     string userFiltersString;
-
-//    json append = json::parse("{{\"user\":"s+"xx"+"}}");
-//    loadedMessages.begin()->insert(append.begin(),append.end());
 
     for (auto &msg: loadedMessages) {
         int x = msg["user_from"];
         userFiltersString = "{\"id\":" + to_string(x) + "}";
-//        userFilters = json::parse(userFiltersString);
         JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
 
-//        json userObj = user.begin();
         msg["user"] = users[0];
         users.clear();
-//        userFilters.clear();
     }
 
-//    loadedMessages["user"] =;
-//    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?
 
-//    return user->getMessages();
     cout << loadedMessages << endl;
     return R"({"status": 200,"data":)" + (!loadedMessages.empty() ? loadedMessages.dump() : "[]") + "}";
-//    return loadedMessages;
 }
