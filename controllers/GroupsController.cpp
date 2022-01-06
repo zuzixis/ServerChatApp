@@ -22,7 +22,7 @@ string GroupsController::getGroups(const json *data) {
 
     json loadedGroups;
     json loadedGroupIds;
-    JsonReader::read("database/group_users.json", filters, loadedGroupIds);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, filters, loadedGroupIds);
 
     // {"or":[{"id":1},{"id":2}]}
     if (!loadedGroupIds.empty()) {
@@ -38,7 +38,7 @@ string GroupsController::getGroups(const json *data) {
 
         json groupFilters = json::parse(groupFiltersString);
 
-        JsonReader::read("database/groups.json", groupFilters, loadedGroups);
+        JsonReader::read(Helpers::DATABASE_GROUP, groupFilters, loadedGroups);
         cout << loadedGroups << endl;
     }
     return R"({"status": 200,"data":)" + (!loadedGroups.empty() ? loadedGroups.dump() : "[]") + "}";
@@ -63,7 +63,7 @@ string GroupsController::search(const json *data) {
     json filters = json::parse(filtersString);
 
     json loadedGroups;
-    JsonReader::read("database/groups.json", filters, loadedGroups);
+    JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedGroups);
 
     // {"or":[{"id":1},{"id":2}]}
 
@@ -79,7 +79,7 @@ string GroupsController::search(const json *data) {
 //    json groupFilters = json::parse(groupFiltersString);
 //
 //    json loadedGroups;
-//    JsonReader::read("database/groups.json", groupFilters, loadedGroups);
+//    JsonReader::read(Helpers::DATABASE_GROUP, groupFilters, loadedGroups);
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?
 
@@ -107,7 +107,7 @@ string GroupsController::joinToGroup(const json *data) {
     json filters = json::parse(filtersString);
 
     json loadedItems;
-    JsonReader::read("database/group_users.json", {}, loadedItems);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, loadedItems);
     cout << loadedItems << endl;
     json newData;
     newData["group_id"] = groupId;
@@ -140,7 +140,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
 //    json filters = json::parse(filtersString);
 
     json actualJson,newJson;
-    JsonReader::read("database/group_users.json", {}, actualJson);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, actualJson);
     newJson.clear();
     copy_if(
             actualJson.begin(), actualJson.end(),
@@ -158,7 +158,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
 
 string GroupsController::create(const json *data) {
     json loadedItems;
-    JsonReader::read("database/groups.json", {}, loadedItems);
+    JsonReader::read(Helpers::DATABASE_GROUP, {}, loadedItems);
     //JsonReader::read("skuska.json", {}, loadedUsers);
 
     if (!data->contains("name")) {
@@ -196,7 +196,7 @@ string GroupsController::create(const json *data) {
     json filters = json::parse(filtersString);
 
     loadedItems.clear();
-    JsonReader::read("database/group_users.json", {}, loadedItems);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, loadedItems);
     cout << loadedItems << endl;
     newData.clear();
     newData["group_id"] = newId;
@@ -226,14 +226,14 @@ string GroupsController::removeGroup(const json *data) {
     json filters = json::parse(filtData);
 
     json actualJson;
-    JsonReader::read("database/groups.json", filters, actualJson);
+    JsonReader::read(Helpers::DATABASE_GROUP, filters, actualJson);
 
     if (actualJson.empty() || actualJson.begin()->at("creator_id") != myId) {
         return R"({"status": 400,"data":{"msg":""}})";
     }
 
     actualJson.clear();
-    JsonReader::read("database/groups.json", {}, actualJson);
+    JsonReader::read(Helpers::DATABASE_GROUP, {}, actualJson);
 
     if (actualJson.empty()) {
         return R"({"status": 400,"data":{"msg":""}})";
@@ -252,7 +252,7 @@ string GroupsController::removeGroup(const json *data) {
     file.close();
 
     actualJson.clear();
-    JsonReader::read("database/group_users.json", {}, actualJson);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, actualJson);
     newJson.clear();
     copy_if(
             actualJson.begin(), actualJson.end(),

@@ -32,7 +32,7 @@ string RequestsController::askForRequestsContact(const json *data) {
             to_string(userFrom) + ",\"user_from\":" + to_string(userTo) + "}}]}");
 
     json loadedRequests;
-    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
     if (!loadedRequests.empty()) {
         return R"({"status": 400,"data":{"msg":""}})";
@@ -44,7 +44,7 @@ string RequestsController::askForRequestsContact(const json *data) {
     newRequest["user_to"] = userTo;
 //    newRequest["status"] = "waiting";
 
-    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, {}, loadedRequests);
     loadedRequests.push_back(newRequest);
 
     ofstream file("database/contact_requests.json");
@@ -64,7 +64,7 @@ string RequestsController::getContactRequests(const json *data) {
     json filters = json::parse("{\"user_to\":" + to_string(userId) + "}");
 
     json loadedRequests;
-    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
     cout << loadedRequests << endl;
 
@@ -86,7 +86,7 @@ string RequestsController::getContactRequests(const json *data) {
         usersFiltersString += "]}";
 
         json userFilter = json::parse(usersFiltersString);
-        JsonReader::read("database/users.json", userFilter, retUsers);
+        JsonReader::read(Helpers::DATABASE_USERS, userFilter, retUsers);
     }
 
     cout << retUsers << endl;
@@ -110,7 +110,7 @@ string RequestsController::confirmationContactRequest(const json *data) {
             "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
     json loadedRequests;
-    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
     if (loadedRequests.empty()) {
         return R"({"status": 400,"data":{"msg":""}})";
@@ -120,11 +120,11 @@ string RequestsController::confirmationContactRequest(const json *data) {
 //    json editedRequest = loadedContacts[0];
 //    editedRequest["status"] = "confirmed";
 
-    JsonReader::read("database/contacts.json", {}, loadedContacts);
+    JsonReader::read(Helpers::DATABASE_CONTACTS, {}, loadedContacts);
 
     loadedContacts.push_back(json::parse(
             "{\"user_1\":" + to_string(userFrom) + ", \"user_2\":" + to_string(userTo) + "}"));
-    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, {}, loadedRequests);
 
     json newRequests;
     copy_if(
@@ -165,7 +165,7 @@ string RequestsController::rejectContactRequest(const json *data) {
             "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
     json loadedRequests;
-    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
 
     if (loadedRequests.empty()) {

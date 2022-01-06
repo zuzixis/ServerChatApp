@@ -47,7 +47,7 @@ bool Group::remove(int id) {
 bool Group::exists(const int id) {
     json loadedUsers;
     json filters = json::parse("{\"id\":" + to_string(id) + "}");
-    JsonReader::read("database/groups.json", filters, loadedUsers);
+    JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedUsers);
 
     return !loadedUsers.empty();
 }
