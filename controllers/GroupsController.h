@@ -17,6 +17,7 @@ public:
     GroupsController();
     ~GroupsController();
 
+
     string getGroups(const json* data);
     string search(const json* data);
     string create(const json* data);

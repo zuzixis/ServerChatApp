@@ -15,6 +15,7 @@ public:
     ContactsController();
     ~ContactsController();
 
+
     string getContacts(const json* data);
     string removeFromContacts(const json* data);
 

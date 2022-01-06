@@ -47,7 +47,7 @@ string RequestsController::askForRequestsContact(const json *data) {
     JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, {}, loadedRequests);
     loadedRequests.push_back(newRequest);
 
-    ofstream file("database/contact_requests.json");
+    ofstream file(Helpers::DATABASE_CONTACT_REQUESTS);
     file << loadedRequests;
     file.close();
 
@@ -136,11 +136,11 @@ string RequestsController::confirmationContactRequest(const json *data) {
                 return false;
             });
 
-    ofstream fileContacts("database/contacts.json");
+    ofstream fileContacts(Helpers::DATABASE_CONTACTS);
     fileContacts << loadedContacts;
     fileContacts.close();
 
-    ofstream fileRequests("database/contact_requests.json");
+    ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
     fileRequests << (!newRequests.empty() ? newRequests : "[]");
     fileRequests.close();
 
@@ -150,6 +150,7 @@ string RequestsController::confirmationContactRequest(const json *data) {
 }
 
 string RequestsController::rejectContactRequest(const json *data) {
+
 
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
@@ -183,7 +184,7 @@ string RequestsController::rejectContactRequest(const json *data) {
                 return false;
             });
 
-    ofstream fileRequests("database/contact_requests.json");
+    ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
     fileRequests << (!newRequests.empty() ? newRequests : "[]");
     fileRequests.close();
 

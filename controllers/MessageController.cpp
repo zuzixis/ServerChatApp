@@ -59,12 +59,13 @@ string MessageController::sendMessage(json *data) {
 
     cout << *data << endl;
     loadedMessages.push_back(*data);
-    ofstream file("database/messages.json");
+    ofstream file(Helpers::DATABASE_MESSAGES);
     file << loadedMessages;
     file.close();
 
 //    Helpers::broadcastToUser(userTo, data->dump());
 // TODO: ak posielam spravu do skupiny, chcem poslat upozornenie vsetkym v skupine
+
 
     return R"({"status": 200,"data":{}})";
 }

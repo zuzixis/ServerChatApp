@@ -32,6 +32,7 @@ string AuthController::login(const json *data, int *connFd) {
 
         this->activeUsersProvider->addUser(user);
 
+
         int id = loadedUsers[0]["id"];
         return to_string(id);
     }
@@ -70,7 +71,7 @@ string AuthController::deleteAccount(const json *data) {
     cout << newJson << endl << endl;
 
     if (found) {
-        ofstream fileUsers("database/users.json");
+        ofstream fileUsers(Helpers::DATABASE_USERS);
         fileUsers << (!newJson.empty() ? newJson : "[]");
         fileUsers.close();
 
@@ -86,7 +87,7 @@ string AuthController::deleteAccount(const json *data) {
                     return false;
                 });
 
-        ofstream fileMessages("database/messages.json");
+        ofstream fileMessages(Helpers::DATABASE_MESSAGES);
         fileMessages << (!newJson.empty() ? newJson : "[]");
         fileMessages.close();
 
@@ -102,7 +103,7 @@ string AuthController::deleteAccount(const json *data) {
                     return false;
                 });
 
-        ofstream fileRequests("database/contact_requests.json");
+        ofstream fileRequests(Helpers::DATABASE_CONTACT_REQUESTS);
         fileRequests << (!newJson.empty() ? newJson : "[]");
         fileRequests.close();
 
@@ -118,7 +119,7 @@ string AuthController::deleteAccount(const json *data) {
                     return false;
                 });
 
-        ofstream fileContacts("database/contacts.json");
+        ofstream fileContacts(Helpers::DATABASE_CONTACTS);
         fileContacts << (!newJson.empty() ? newJson : "[]");
         fileContacts.close();
 
@@ -134,7 +135,7 @@ string AuthController::deleteAccount(const json *data) {
                     return false;
                 });
 
-        ofstream fileGroupUsers("database/group_users.json");
+        ofstream fileGroupUsers(Helpers::DATABASE_GROUP_USERS);
         fileGroupUsers << (!newJson.empty() ? newJson : "[]");
         fileGroupUsers.close();
 
@@ -169,7 +170,7 @@ string AuthController::createAccount(json *data) {
     }
 
     loadedUsers.push_back(*data);
-    ofstream file("database/users.json");
+    ofstream file(Helpers::DATABASE_USERS);
     file << loadedUsers;
     file.close();
     return R"({"status": 200,"data":{}})";

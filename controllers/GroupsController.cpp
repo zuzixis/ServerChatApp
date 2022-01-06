@@ -96,6 +96,7 @@ string GroupsController::joinToGroup(const json *data) {
         return R"({"status": 422,"data":{"errors":[{"group_id":"Id skupiny je povinné"}]}})";
     }
 
+
     int groupId = data->at("group_id");
 
     if (!Group::exists(groupId)) {
@@ -114,7 +115,7 @@ string GroupsController::joinToGroup(const json *data) {
     newData["user_id"] = userId;
 
     loadedItems.push_back(newData);
-    ofstream file("database/group_users.json");
+    ofstream file(Helpers::DATABASE_GROUP_USERS);
     file << loadedItems;
     file.close();
 
@@ -149,7 +150,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
 //                return (int) (item["group_id"]) != groupId || (int) (item["group_id"]) != groupId;
             });
 
-    ofstream fileGU("database/group_users.json");
+    ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
     fileGU << (!newJson.empty() ? newJson : "[]");
     fileGU.close();
 
@@ -170,6 +171,7 @@ string GroupsController::create(const json *data) {
             return R"({"status": 409,"data":{"msg":"Skupina s takýmto názvom uŽ existuje"}})";
         }
     }
+
     int newId;
     if (loadedItems.empty()) {
         newId = 1;
@@ -186,7 +188,7 @@ string GroupsController::create(const json *data) {
 
 
     loadedItems.push_back(newData);
-    ofstream file("database/groups.json");
+    ofstream file(Helpers::DATABASE_GROUP);
     file << loadedItems;
     file.close();
 
@@ -203,7 +205,7 @@ string GroupsController::create(const json *data) {
     newData["user_id"] = userId;
 
     loadedItems.push_back(newData);
-    ofstream fileGU("database/group_users.json");
+    ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
     fileGU << loadedItems;
     fileGU.close();
     return R"({"status": 200,"data":{}})";
@@ -247,7 +249,7 @@ string GroupsController::removeGroup(const json *data) {
                 return id != groupId;
             });
 
-    ofstream file("database/groups.json");
+    ofstream file(Helpers::DATABASE_GROUP);
     file << (!newJson.empty() ? newJson : "[]");
     file.close();
 
@@ -260,7 +262,7 @@ string GroupsController::removeGroup(const json *data) {
                 return (int) (item["group_id"]) != groupId;
             });
 
-    ofstream fileGU("database/group_users.json");
+    ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
     fileGU << (!newJson.empty() ? newJson : "[]");
     fileGU.close();
 

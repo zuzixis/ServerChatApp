@@ -61,6 +61,7 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
 }
 
 
+
 bool JsonReader::filterOr(const json &filters, const json &item) {
     for (auto it = filters.begin(); it != filters.end(); it++) {
 

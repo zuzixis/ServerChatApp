@@ -51,7 +51,7 @@ void *handle_client(int connfd) {
     int receiveSendStatus;
 //    bool enableNavigation;
     string output;
-    User *user;
+    User *user = nullptr;
 
 //    int keepalive = 5;
 //    int keepcount = 3;
@@ -86,6 +86,7 @@ void *handle_client(int connfd) {
                     } else {
                         ActiveUsersProvider::getInstance().setActualUserId(0);
                     }
+
 
                     Navigator n(&connfd);
                     string returnFromRedirect = n.redirect(j["action"], j["data"]);

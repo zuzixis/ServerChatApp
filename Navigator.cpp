@@ -56,5 +56,6 @@ string Navigator::redirect(const string &action, json &data) {
         }
     }
 
+
     return R"({"status": 405,"data":{"msg":"Zlá adresa."}})";
 }

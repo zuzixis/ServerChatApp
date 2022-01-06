@@ -19,7 +19,6 @@ public:
     ~MessageController();
 
 
-
     json getConversation(const json *data);
     string sendMessage( json* data);
     string sendFile(const json* data);

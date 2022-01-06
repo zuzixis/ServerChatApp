@@ -17,22 +17,23 @@ public:
     static time_t string_to_time_t(string s);
 
     //POUŽITIE ZUZKA
-//    static constexpr const char* DATABASE_USERS = "../database/users.json";
-//    static constexpr const char* DATABASE_CONTACTS = "../database/contacts.json";
-//    static constexpr const char* DATABASE_MESSAGES = "../database/messages.json";
-//    static constexpr const char* DATABASE_CONTACT_REQUESTS = "../database/contact_requests.json";
-//    static constexpr const char* DATABASE_GROUP_USERS = "../database/group_users.json";
-//    static constexpr const char* DATABASE_GROUP = "../database/groups.json";
-//    static constexpr const char* IP ="158.193.128.160";
+    static constexpr const char* DATABASE_USERS = "../database/users.json";
+    static constexpr const char* DATABASE_CONTACTS = "../database/contacts.json";
+    static constexpr const char* DATABASE_MESSAGES = "../database/messages.json";
+    static constexpr const char* DATABASE_CONTACT_REQUESTS = "../database/contact_requests.json";
+    static constexpr const char* DATABASE_GROUP_USERS = "../database/group_users.json";
+    static constexpr const char* DATABASE_GROUP = "../database/groups.json";
+    static constexpr const char* IP ="158.193.128.160";
+
 
 
 
     //POUŽITIE KUBO
-    static constexpr const char* DATABASE_USERS = "database/users.json";
+    /*static constexpr const char* DATABASE_USERS = "database/users.json";
     static constexpr const char* DATABASE_CONTACTS = "database/contacts.json";
     static constexpr const char* DATABASE_MESSAGES = "database/messages.json";
     static constexpr const char* DATABASE_CONTACT_REQUESTS = "database/contact_requests.json";
     static constexpr const char* DATABASE_GROUP_USERS = "database/group_users.json";
-    static constexpr const char* DATABASE_GROUP = "database/groups.json";
-    static constexpr const char* IP ="127.0.0.1";
+    static constexpr const char* DATABASE_GROUP = "database/groups.json";*/
+    //static constexpr const char* IP ="127.0.0.1";
 };

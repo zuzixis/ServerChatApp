@@ -21,6 +21,7 @@ string UserController::search(const json *data) {
         return R"({"status": 422,"data":{"errors":[{"word":"Hľadaný výraz je povinný"}]}})";
     }
 
+
     string x = data->at("word");
     string filtersString = R"({"name":"LIKE:)" + x + "\"}";
 

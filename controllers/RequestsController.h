@@ -17,6 +17,7 @@ public:
 
     ~RequestsController();
 
+
     string askForRequestsContact(const json *data);
 
     string getContactRequests(const json *data);

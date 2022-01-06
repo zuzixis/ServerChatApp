@@ -90,13 +90,14 @@ string ContactsController::removeFromContacts(const json *data) {
 
                 return !((u1 == myId && u2 == userId) || (u2 == myId && u1 == userId));
 
+
 //                if ((int) (item["user_from"]) != myId || (int) (item["user_to"]) != userTo) {
 //                    return true;
 //                }
 //                return false;
             });
 
-    ofstream file("database/contacts.json");
+    ofstream file(Helpers::DATABASE_CONTACTS);
     file << (!newJson.empty() ? newJson : "[]");
     file.close();
 

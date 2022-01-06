@@ -18,6 +18,7 @@ public:
 
     ~AuthController();
 
+
     string login(const json *data, int *connFd);
 
     string logout(const json *data);
