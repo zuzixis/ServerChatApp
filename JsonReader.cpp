@@ -57,7 +57,7 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
         });
     }
 
-    return !filtered.empty() ? json::parse("[]") : filtered;
+    return filtered;
 }
 
 
@@ -147,8 +147,8 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
                 }
             } else {
 //                for (auto itInner = it->begin(); itInner != it->end(); itInner++) {
-//                cout << "item" << item << endl;
-//                cout << "it.key()" << it.key() << endl;
+                cout << "item: " << item << endl;
+                cout << "it.key(): " << it.key() << endl;
                 if (!item.contains(it.key())) {
                     throw logic_error("Filtered key is not in json!");
                 }
