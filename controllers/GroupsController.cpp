@@ -22,7 +22,7 @@ string GroupsController::getGroups(const json *data) {
 
     json loadedGroups;
     json loadedGroupIds;
-    JsonReader::read("../database/group_users.json", filters, loadedGroupIds);
+    JsonReader::read(Helpers::DATABASE_GROUP_USERS, filters, loadedGroupIds);
 
     // {"or":[{"id":1},{"id":2}]}
     if (!loadedGroupIds.empty()) {
@@ -38,7 +38,7 @@ string GroupsController::getGroups(const json *data) {
 
         json groupFilters = json::parse(groupFiltersString);
 
-        JsonReader::read("../database/groups.json", groupFilters, loadedGroups);
+        JsonReader::read(Helpers::DATABASE_GROUP, groupFilters, loadedGroups);
         cout << loadedGroups << endl;
     }
     return R"({"status": 200,"data":)" + (!loadedGroups.empty() ? loadedGroups.dump() : "[]") + "}";
@@ -63,7 +63,7 @@ string GroupsController::search(const json *data) {
     json filters = json::parse(filtersString);
 
     json loadedGroups;
-    JsonReader::read("../database/groups.json", filters, loadedGroups);
+    JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedGroups);
 
     // {"or":[{"id":1},{"id":2}]}
 
@@ -90,7 +90,7 @@ string GroupsController::search(const json *data) {
 
 string GroupsController::create(const json *data) {
     json loadedItems;
-    JsonReader::read("../database/groups.json", {}, loadedItems);
+    JsonReader::read(Helpers::DATABASE_GROUP, {}, loadedItems);
     //JsonReader::read("skuska.json", {}, loadedUsers);
 
     if (!data->contains("name")) {
@@ -117,7 +117,7 @@ string GroupsController::create(const json *data) {
 
 
     loadedItems.push_back(newData);
-    ofstream file("database/groups.json");
+    ofstream file(Helpers::DATABASE_GROUP);
     file << loadedItems;
     file.close();
     return R"({"status": 200,"data":{}})";

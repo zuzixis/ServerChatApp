@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    string ip = "127.0.0.1";
+    string ip = Helpers::IP;
 
     int port = atoi(argv[1]);
     int option = 1;
