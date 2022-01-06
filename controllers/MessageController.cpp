@@ -5,6 +5,7 @@
 #include "MessageController.h"
 #include "JsonReader.h"
 #include "Helpers.h"
+#include "models/Group.h"
 
 MessageController::MessageController() {
 
@@ -25,12 +26,12 @@ string MessageController::sendMessage(json *data) {
     }
     bool toGroup = data->contains("group_to");
     int userFrom = activeUsersProvider.getActualUserId();
-//    int toId;
+    int toId;
     if (toGroup) {
-//        toId = data->at("group_to");
+        toId = data->at("group_to");
         (*data)["user_to"] = "null";
     } else {
-//        toId = data->at("user_to");
+        toId = data->at("user_to");
         (*data)["group_to"] = "null";
     }
 
@@ -65,7 +66,14 @@ string MessageController::sendMessage(json *data) {
     file << loadedMessages;
     file.close();
 
-//    Helpers::broadcastToUser(userTo, data->dump());
+    json broadJson = "{\"type\":" + to_string(toGroup ? 2 : 1) + ",\"data\":" + data->dump() + "}";
+    if (toGroup) {
+        for (auto u: Group::getMembers(toId)) {
+            Helpers::broadcastToUser(u["user_id"], broadJson.dump());
+        }
+    } else {
+        Helpers::broadcastToUser(toId, broadJson.dump());
+    }
 // TODO: ak posielam spravu do skupiny, chcem poslat upozornenie vsetkym v skupine
 
 

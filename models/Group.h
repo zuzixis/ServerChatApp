@@ -43,4 +43,5 @@ public:
     bool update() override;
     bool remove(int id) override;
     static bool exists(const int id);
+    static json getMembers(const int id);
 };

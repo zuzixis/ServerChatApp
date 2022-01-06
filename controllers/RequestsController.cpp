@@ -51,7 +51,9 @@ string RequestsController::askForRequestsContact(const json *data) {
     file << loadedRequests;
     file.close();
 
-    Helpers::broadcastToUser(userTo, data->dump());
+    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":" + data->dump() + "}";
+
+    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
 
