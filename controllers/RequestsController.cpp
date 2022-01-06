@@ -170,7 +170,7 @@ string RequestsController::rejectContactRequest(const json *data) {
 
 
     if (loadedRequests.empty()) {
-            return R"({"status": 400,"data":{"msg":""}})";
+        return R"({"status": 400,"data":{"msg":""}})";
 //        return R"({"status": 400,"data":{}})";
     }
 

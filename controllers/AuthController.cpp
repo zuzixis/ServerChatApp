@@ -17,7 +17,7 @@ string AuthController::login(const json *data, int *connFd) {
     if (loadedUsers.empty()) {
         return R"({"status": 401,"data":{"msg":"Zlé prihlásovacie údaje."}})";
     } else {
-        cout << "ActiveUsersProvider::getInstance().getActualUserId()"<< ActiveUsersProvider::getInstance().getActualUserId() <<  endl;
+//        cout << "ActiveUsersProvider::getInstance().getActualUserId()"<< ActiveUsersProvider::getInstance().getActualUserId() <<  endl;
         if (ActiveUsersProvider::getInstance().getActualUserId() > 0) {
             return R"({"status": 401,"data":{"msg":"Už ste prihlásený."}})";
         }
@@ -54,7 +54,7 @@ string AuthController::deleteAccount(const json *data) {
 //    }
 
     int id = ActiveUsersProvider::getInstance().getActualUserId();
-    cout << "id: " << id << endl << endl;
+//    cout << "id: " << id << endl << endl;
     bool found = false;
 
     copy_if(

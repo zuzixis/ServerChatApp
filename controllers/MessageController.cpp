@@ -107,6 +107,25 @@ json MessageController::getConversation(const json *data) {
     json loadedMessages;
     JsonReader::read(Helpers::DATABASE_MESSAGES, filters, loadedMessages);
 
+    json users;//, userFilters;
+    string userFiltersString;
+
+//    json append = json::parse("{{\"user\":"s+"xx"+"}}");
+//    loadedMessages.begin()->insert(append.begin(),append.end());
+
+    for (auto &msg: loadedMessages) {
+        int x = msg["user_from"];
+        userFiltersString = "{\"id\":" + to_string(x) + "}";
+//        userFilters = json::parse(userFiltersString);
+        JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
+
+//        json userObj = user.begin();
+        msg["user"] = users[0];
+        users.clear();
+//        userFilters.clear();
+    }
+
+//    loadedMessages["user"] =;
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
 // TODO: ideme davat do usera spravy?
 

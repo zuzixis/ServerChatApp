@@ -24,7 +24,7 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
         myfile.close();
     }
 
-    cout << "Filters" << filters << endl;
+//    cout << "Filters" << filters << endl;
     copy_if(j.begin(), j.end(),
             back_inserter(filtered), [&filters](const json &item) {
 
@@ -47,10 +47,10 @@ json JsonReader::read(const string &fileName, const json &filters, json &filtere
                 }
 
             });
-    cout << "filtered" << filtered << endl;
+//    cout << "filtered" << filtered << endl;
     if (!filtered.empty() && filtered.begin()->contains("created_at")) {
         sort(filtered.begin(), filtered.end(), [](json a, json b) {
-            cout << a["created_at"] << "  " << b["created_at"] << endl;
+//            cout << a["created_at"] << "  " << b["created_at"] << endl;
 //            cout << to_string(Helpers::string_to_time_t(
 //                    a["created_at"])) << "  " << to_string(Helpers::string_to_time_t(b["created_at"])) << endl;
             return Helpers::string_to_time_t(a["created_at"]) < Helpers::string_to_time_t(b["created_at"]);
@@ -76,7 +76,7 @@ bool JsonReader::filterOr(const json &filters, const json &item) {
                 }
             } else {
                 // operacia
-                cout << it.key() << endl;
+//                cout << it.key() << endl;
                 cout << item << endl;
 
                 if (!item.contains(it.key())) {
@@ -147,8 +147,8 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
                 }
             } else {
 //                for (auto itInner = it->begin(); itInner != it->end(); itInner++) {
-                cout << "item" << item << endl;
-                cout << "it.key()" << it.key() << endl;
+//                cout << "item" << item << endl;
+//                cout << "it.key()" << it.key() << endl;
                 if (!item.contains(it.key())) {
                     throw logic_error("Filtered key is not in json!");
                 }
@@ -204,7 +204,7 @@ bool JsonReader::filterAnd(const json &filters, const json &item) {
             }
         } else {
             for (auto itInner = it->begin(); itInner != it->end(); itInner++) {
-                cout << it->dump() << endl << itInner->dump() << endl;
+//                cout << it->dump() << endl << itInner->dump() << endl;
                 if (itInner.key() == "or") {
                     if (!filterOr(itInner.value(), item)) {
                         return false;
