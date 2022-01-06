@@ -6,6 +6,7 @@
 
 string Navigator::redirect(const string &action, json &data) {
 
+
     if (action == "LOGIN") {
 //        map<string, string> map = {{"name", "jozo"}, {"password", "pass"}};
         return this->authController->login(&data, this->connfd);
@@ -44,8 +45,16 @@ string Navigator::redirect(const string &action, json &data) {
             return this->groupsController->search(&data);
         } else if (action == "CREATE_GROUP") {
             return this->groupsController->create(&data);
+        } else if (action == "REMOVE_FROM_CONTACTS") {
+            return this->contactsController->removeFromContacts(&data);
+        }  else if (action == "JOIN_TO_GROUP") {
+            return this->groupsController->joinToGroup(&data);
+        }else if (action == "REMOVE_GROUP") {
+            return this->groupsController->removeGroup(&data);
+        }else if (action == "UNJOIN_FROM_GROUP") {
+            return this->groupsController->unjoinFromGroup(&data);
         }
     }
 
-    return "false";
+    return R"({"status": 405,"data":{"msg":"Zlá adresa."}})";
 }

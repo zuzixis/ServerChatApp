@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 #include "Model.h"
+#include "json.hpp"
+#include "JsonReader.h"
+
 
 using namespace std;
 
@@ -39,5 +42,5 @@ public:
     bool save() override;
     bool update() override;
     bool remove(int id) override;
-
+    static bool exists(const int id);
 };

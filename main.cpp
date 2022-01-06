@@ -96,11 +96,11 @@ void *handle_client(int connfd) {
                         /* Add client to the queue and fork thread */
                         user = ActiveUsersProvider::getInstance().getLastUser();
 
-
                         output = R"({"status": 200,"data":{"id":)" + returnFromRedirect + "}}";
 
 //                        output = R"({"status":200,"data":{}})";
-                    } else if (j["action"] == "LOGOUT") {
+                    } else if (j["action"] == "LOGOUT" ||
+                               (j["action"] == "REGISTER" && returnFromRedirect == R"({"status": 200,"data":{}})")) {
                         pthread_mutex_lock(&clients_mutex);
                         ActiveUsersProvider::getInstance().removeUser(user);
                         user = nullptr;
@@ -110,11 +110,11 @@ void *handle_client(int connfd) {
                         output = returnFromRedirect;
                     }
                 } else {
-                    output = R"({"status":403,"data":{}})";// TODO: do dat daj, v com bola chyba
+                    output = R"({"status":403,"data":{"msg":"Pre danu akciu musite byt prihlaseny"}})";// TODO: do dat daj, v com bola chyba
                 }
             } else {
                 //vrati sa chyba, že data nie su kompletne
-                output = R"({"status":422,"data":{}})";// TODO: do dat daj, v com bola chyba
+                output = R"({"status":422,"data":{"msg":""}})";// TODO: do dat daj, v com bola chyba
             }
             Helpers::sgets(buffer, BUFFER_SZ, &output);
 //            final = "";
@@ -179,7 +179,7 @@ int main(int argc, char **argv) {
     }
 
     /* Set the option active */
-    optval = 5;
+    optval = 500;
     optlen = sizeof(optval);
     if (setsockopt(listenfd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen) < 0) {
         perror("setsockopt()");

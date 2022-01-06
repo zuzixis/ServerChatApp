@@ -43,3 +43,11 @@ bool Group::remove(int id) {
     //TODO: Implementovat remove
     return false;
 }
+
+bool Group::exists(const int id) {
+    json loadedUsers;
+    json filters = json::parse("{\"id\":" + to_string(id) + "}");
+    JsonReader::read("database/groups.json", filters, loadedUsers);
+
+    return !loadedUsers.empty();
+}

@@ -13,21 +13,30 @@ string RequestsController::askForRequestsContact(const json *data) {
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     int userFrom = activeUsersProvider.getActualUserId();
+    if (!data->contains("user_to")) {
+        return R"({"status": 422,"data":{"errors":[{"user_to":"Atribút je povinný"}]}})";
+    }
     int userTo = data->at("user_to");
 
-    if (!User::exists(userTo) || Contact::exists(userFrom, userTo)) {
-        return R"({"status": 400,"data":{}})";
+    if (!User::exists(userTo)) {
+        return R"({"status": 400,"data":{"msg":"Uživateľ s takýmto id neexistuje."}})";
     }
+
+    if (Contact::exists(userFrom, userTo)) {
+        return R"({"status": 400,"data":{"msg":"Takéhoto uživateľa nemáte v kontaktoch."}})";
+    }
+
     json filters = json::parse(
             "{\"or\":"s + "[{\"and\":{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) +
             "}},{\"and\":{\"user_to\":" +
             to_string(userFrom) + ",\"user_from\":" + to_string(userTo) + "}}]}");
 
     json loadedRequests;
-    JsonReader::read("../database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
     if (!loadedRequests.empty()) {
-        return R"({"status": 400,"data":{}})";
+        return R"({"status": 400,"data":{"msg":""}})";
+//        return R"({"status": 400,"data":{}})";
     }
 
     json newRequest;
@@ -35,7 +44,7 @@ string RequestsController::askForRequestsContact(const json *data) {
     newRequest["user_to"] = userTo;
 //    newRequest["status"] = "waiting";
 
-    JsonReader::read("../database/contact_requests.json", {}, loadedRequests);
+    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
     loadedRequests.push_back(newRequest);
 
     ofstream file("database/contact_requests.json");
@@ -55,7 +64,7 @@ string RequestsController::getContactRequests(const json *data) {
     json filters = json::parse("{\"user_to\":" + to_string(userId) + "}");
 
     json loadedRequests;
-    JsonReader::read("../database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
     cout << loadedRequests << endl;
 
@@ -77,7 +86,7 @@ string RequestsController::getContactRequests(const json *data) {
         usersFiltersString += "]}";
 
         json userFilter = json::parse(usersFiltersString);
-        JsonReader::read("../database/users.json", userFilter, retUsers);
+        JsonReader::read("database/users.json", userFilter, retUsers);
     }
 
     cout << retUsers << endl;
@@ -88,27 +97,34 @@ string RequestsController::confirmationContactRequest(const json *data) {
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     int userTo = activeUsersProvider.getActualUserId();
+    if (!data->contains("user_from")) {
+        return R"({"status": 422,"data":{"errors":[{"user_from":"Atribút je povinný"}]}})";
+    }
     int userFrom = data->at("user_from");
+
+    if (!User::exists(userFrom)) {
+        return R"({"status": 400,"data":{"msg":"Uživateľ s takýmto id neexistuje."}})";
+    }
 
     json filters = json::parse(
             "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
     json loadedRequests;
-    JsonReader::read("../database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
     if (loadedRequests.empty()) {
-        return R"({"status": 400,"data":{}})";
+        return R"({"status": 400,"data":{"msg":""}})";
     }
 
     json loadedContacts;
 //    json editedRequest = loadedContacts[0];
 //    editedRequest["status"] = "confirmed";
 
-    JsonReader::read("../database/contacts.json", {}, loadedContacts);
+    JsonReader::read("database/contacts.json", {}, loadedContacts);
 
     loadedContacts.push_back(json::parse(
             "{\"user_1\":" + to_string(userFrom) + ", \"user_2\":" + to_string(userTo) + "}"));
-    JsonReader::read("../database/contact_requests.json", {}, loadedRequests);
+    JsonReader::read("database/contact_requests.json", {}, loadedRequests);
 
     json newRequests;
     copy_if(
@@ -125,7 +141,7 @@ string RequestsController::confirmationContactRequest(const json *data) {
     fileContacts.close();
 
     ofstream fileRequests("database/contact_requests.json");
-    fileRequests << newRequests;
+    fileRequests << (!newRequests.empty() ? newRequests : "[]");
     fileRequests.close();
 
     Helpers::broadcastToUser(userFrom, "Potvrdena ziadost s " + to_string(userTo));
@@ -138,17 +154,23 @@ string RequestsController::rejectContactRequest(const json *data) {
     cout << *data << endl;
     ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     int userTo = activeUsersProvider.getActualUserId();
+    if (!data->contains("user_from")) {
+        return R"({"status": 422,"data":{"errors":[{"user_from":"Atribút je povinný"}]}})";
+    }
     int userFrom = data->at("user_from");
-
+    if (!User::exists(userFrom)) {
+        return R"({"status": 400,"data":{"msg":"Uživateľ s takýmto id neexistuje."}})";
+    }
     json filters = json::parse(
             "{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) + "}");
 
     json loadedRequests;
-    JsonReader::read("../database/contact_requests.json", filters, loadedRequests);
+    JsonReader::read("database/contact_requests.json", filters, loadedRequests);
 
 
     if (loadedRequests.empty()) {
-        return R"({"status": 400,"data":{}})";
+            return R"({"status": 400,"data":{"msg":""}})";
+//        return R"({"status": 400,"data":{}})";
     }
 
     json newRequests;
@@ -162,7 +184,7 @@ string RequestsController::rejectContactRequest(const json *data) {
             });
 
     ofstream fileRequests("database/contact_requests.json");
-    fileRequests << newRequests;
+    fileRequests << (!newRequests.empty() ? newRequests : "[]");
     fileRequests.close();
 
     Helpers::broadcastToUser(userFrom, "Zamietnuta ziadost s " + to_string(userTo));
