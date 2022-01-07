@@ -69,6 +69,13 @@ string MessageController::sendMessage(json *data) {
     file << loadedMessages;
     file.close();
 
+    json users;
+//    int x = msg["user_from"];
+    string userFiltersString = "{\"id\":" + to_string(userFrom) + "}";
+    JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
+
+    (*data)["user"] = users[0];
+
     string broadJsonString = "{\"type\":" + to_string(toGroup ? 2 : 1) + ",\"data\":" + data->dump() + "}";
 //    cout << "broadJsonString" << broadJsonString <<endl;
 //    json broadJson = json::parse(broadJsonString);
