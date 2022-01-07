@@ -14,6 +14,7 @@
 #include "Navigator.h"
 #include "Helpers.h"
 #include <string.h>
+#include "Cryptograph.h"
 #include <regex>
 
 #define MAX_CLIENTS 100
@@ -73,7 +74,7 @@ void *handle_client(int connfd) {
 //        receive = recv(connfd, buffer, BUFFER_SZ, 0);
         if (receiveSendStatus > 0) {
 //            cout << "buffer: " << buffer << endl;
-
+            Cryptograph::decrypt(buffer);
             json j = json::parse(buffer);
             bzero(buffer, BUFFER_SZ);
             cout << j << endl;
@@ -117,8 +118,8 @@ void *handle_client(int connfd) {
                 //vrati sa chyba, že data nie su kompletne
                 output = R"({"status":422,"data":{"msg":""}})";// TODO: do dat daj, v com bola chyba
             }
+            output = Cryptograph::encrypt(output);
             Helpers::sgets(buffer, BUFFER_SZ, &output);
-//            final = "";
             receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
 //            do {
 ////                final += buffer;
