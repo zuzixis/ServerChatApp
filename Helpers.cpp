@@ -53,11 +53,15 @@ bool Helpers::broadcastToUser(const int userId, string msg) {
 
     char buffer[4096];
     int receiveSendStatus;
+    bzero(buffer, 4096);
+    Helpers::sgets(buffer, 4096, &msg);
+
+
     for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
     {
-        bzero(buffer, 4096);
-        Helpers::sgets(buffer, 4096, &msg);
-
+//        cout << "broadcastToUser: " << endl;
+//        cout << "userConnection->getSockfd(): " << userConnection->getSockfd() << endl;
+//        cout << "buffer: " << buffer << endl;
         receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
     }
 
@@ -75,8 +79,7 @@ string Helpers::currentDateTime() {
     return buf;
 }
 
-time_t Helpers::string_to_time_t(string s)
-{
+time_t Helpers::string_to_time_t(string s) {
     struct tm tmp{};
     time_t t;
 

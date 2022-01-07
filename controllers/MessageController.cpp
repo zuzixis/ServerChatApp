@@ -33,6 +33,9 @@ string MessageController::sendMessage(json *data) {
     } else {
         toId = data->at("user_to");
         (*data)["group_to"] = "null";
+        if(toId == userFrom){
+            return R"({"status": 422,"data":{}})";
+        }
     }
 
     json loadedMessages;
@@ -66,16 +69,20 @@ string MessageController::sendMessage(json *data) {
     file << loadedMessages;
     file.close();
 
-    json broadJson = "{\"type\":" + to_string(toGroup ? 2 : 1) + ",\"data\":" + data->dump() + "}";
+    string broadJsonString = "{\"type\":" + to_string(toGroup ? 2 : 1) + ",\"data\":" + data->dump() + "}";
+//    cout << "broadJsonString" << broadJsonString <<endl;
+//    json broadJson = json::parse(broadJsonString);
     if (toGroup) {
         for (auto u: Group::getMembers(toId)) {
-            Helpers::broadcastToUser(u["user_id"], broadJson.dump());
+            if(u["user_id"] == userFrom){
+                continue;
+            }
+            Helpers::broadcastToUser(u["user_id"], broadJsonString);
         }
     } else {
-        Helpers::broadcastToUser(toId, broadJson.dump());
+        Helpers::broadcastToUser(toId, broadJsonString);
     }
 // TODO: ak posielam spravu do skupiny, chcem poslat upozornenie vsetkym v skupine
-
 
     return R"({"status": 200,"data":{}})";
 }
