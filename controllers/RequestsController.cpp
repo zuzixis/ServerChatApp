@@ -51,9 +51,10 @@ string RequestsController::askForRequestsContact(const json *data) {
     file << loadedRequests;
     file.close();
 
-//    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":" + data->dump() + "}";
-//
-//    Helpers::broadcastToUser(userTo, broadJson.dump());
+    json broadJson = "{\"type\":" + to_string(3) + R"(,"data":{"message":"Prisla ziadost od )" + to_string(userFrom)
+                     + "\"}}";
+
+    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
 
@@ -146,10 +147,10 @@ string RequestsController::confirmationContactRequest(const json *data) {
     fileRequests << newRequests;
     fileRequests.close();
 
-    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Potvrdena ziadost s " + to_string(userTo)
-                     + "\"}}";
-
-    Helpers::broadcastToUser(userTo, broadJson.dump());
+//    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Potvrdena ziadost s " + to_string(userTo)
+//                     + "\"}}";
+//
+//    Helpers::broadcastToUser(userTo, broadJson.dump());
 
 //    Helpers::broadcastToUser(userFrom, "Potvrdena ziadost s " + to_string(userTo));
 
@@ -195,10 +196,10 @@ string RequestsController::rejectContactRequest(const json *data) {
     fileRequests << newRequests;
     fileRequests.close();
 
-    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Zamietnuta ziadost s " + to_string(userTo)
-                     + "\"}}";
-
-    Helpers::broadcastToUser(userTo, broadJson.dump());
+//    json broadJson = "{\"type\":" + to_string(3) + ",\"data\":{\"message\":\"Zamietnuta ziadost s " + to_string(userTo)
+//                     + "\"}}";
+//
+//    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
 }
