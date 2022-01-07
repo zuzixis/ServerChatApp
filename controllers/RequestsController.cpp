@@ -26,6 +26,7 @@ string RequestsController::askForRequestsContact(const json *data) {
         return R"({"status": 400,"data":{"msg":"Takéhoto uživateľa uz mate v kontaktoch."}})";
     }
 
+
     json filters = json::parse(
             "{\"or\":"s + "[{\"and\":{\"user_from\":" + to_string(userFrom) + ",\"user_to\":" + to_string(userTo) +
             "}},{\"and\":{\"user_to\":" +
@@ -51,8 +52,13 @@ string RequestsController::askForRequestsContact(const json *data) {
     file << loadedRequests;
     file.close();
 
+    json users;
+//    int x = msg["user_from"];
+    string userFiltersString = "{\"id\":" + to_string(userFrom) + "}";
+    JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
+    string userName = users[0]["name"];
     string broadJsonString =
-            "{\"type\":" + to_string(3) + R"(,"data":{"message":"Prisla ziadost od )" + to_string(userFrom)
+            "{\"type\":" + to_string(3) + R"(,"data":{"message":"Prisla ziadost od uživateľa )" + userName
             + "\"}}";
 
     Helpers::broadcastToUser(userTo, broadJsonString);
