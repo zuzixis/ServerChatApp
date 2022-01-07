@@ -44,7 +44,7 @@ string AuthController::logout(const json *data) {
 }
 
 string AuthController::deleteAccount(const json *data) {
-    json loadedJson, newJson = json::parse("[]");
+    json loadedJson, newJson;
     JsonReader::read(Helpers::DATABASE_USERS, {}, loadedJson);
 
     cout << *data << endl << endl;
@@ -81,10 +81,8 @@ string AuthController::deleteAccount(const json *data) {
         copy_if(
                 loadedJson.begin(), loadedJson.end(),
                 back_inserter(newJson), [&id](const json &item) {
-                    if ((int) (item["user_from"]) != id && (int) (item["user_to"]) != id) {
-                        return true;
-                    }
-                    return false;
+                    return !((int) (item["user_from"]) == id ||
+                             (item["user_to"] != "null" && (int) (item["user_to"]) != id));
                 });
 
         ofstream fileMessages(Helpers::DATABASE_MESSAGES);
