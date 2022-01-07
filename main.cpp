@@ -74,8 +74,8 @@ void *handle_client(int connfd) {
 //        receive = recv(connfd, buffer, BUFFER_SZ, 0);
         if (receiveSendStatus > 0) {
 //            cout << "buffer: " << buffer << endl;
-            Cryptograph::decrypt(buffer);
-            json j = json::parse(buffer);
+            string inp = Cryptograph::decrypt(buffer);
+            json j = json::parse(inp);
             bzero(buffer, BUFFER_SZ);
             cout << j << endl;
             if (j.contains("data") && j.contains("action")) {
@@ -119,6 +119,7 @@ void *handle_client(int connfd) {
                 output = R"({"status":422,"data":{"msg":""}})";// TODO: do dat daj, v com bola chyba
             }
             output = Cryptograph::encrypt(output);
+            cout << "output" << output <<  endl;
             Helpers::sgets(buffer, BUFFER_SZ, &output);
             receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
 //            do {
