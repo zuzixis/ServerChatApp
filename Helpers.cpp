@@ -1,5 +1,6 @@
 #include <sys/socket.h>
 #include "Helpers.h"
+#include "Cryptograph.h"
 
 string Helpers::gen_random(const int len) {
     static const char alphanum[] =
@@ -62,7 +63,9 @@ bool Helpers::broadcastToUser(const int userId, string msg) {
 //        cout << "broadcastToUser: " << endl;
 //        cout << "userConnection->getSockfd(): " << userConnection->getSockfd() << endl;
 //        cout << "buffer: " << buffer << endl;
-        receiveSendStatus = send(userConnection->getSockfd(), buffer, 4096, 0);
+        string inp = Cryptograph::encrypt(buffer);
+
+        receiveSendStatus = send(userConnection->getSockfd(), inp.c_str(), 4096, 0);
     }
 
     // TODO: return value
