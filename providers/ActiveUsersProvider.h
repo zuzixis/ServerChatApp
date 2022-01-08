@@ -8,7 +8,9 @@
 #include "models/User.h"
 
 using namespace std;
+
 class User;
+
 class ActiveUsersProvider {
     int actualUserId = 0;
     vector<User *> *activeUsers = new vector<User *>();
@@ -16,6 +18,12 @@ class ActiveUsersProvider {
 //    static ActiveUsersProvider *instance = {};
     ActiveUsersProvider() {}
 
+    ~ActiveUsersProvider() {
+        for (auto u: *activeUsers) {
+            delete u;
+        }
+        delete activeUsers;
+    }
 
 
 public:
@@ -30,7 +38,8 @@ public:
 //        }
 //    }
     void addUser(User *u);
-    vector<User*>  getById(int id);
+
+    vector<User *> getById(int id);
 
     void removeUser(const User *u);
 
