@@ -230,7 +230,7 @@ int main(int argc, char **argv) {
         // TODO: tu daj login a registraciu z vlakna
 
         /* Check if max clients is reached */
-        if ((ActiveUsersProvider::getInstance().getActiveUsers()->size() + 1) == MAX_CLIENTS) {
+        if ((ActiveUsersProvider::getInstance().getActiveUsers().size() + 1) == MAX_CLIENTS) {
             printf("Max clients reached. Rejected: ");
             print_client_addr(cli_addr);
             printf(":%d\n", cli_addr.sin_port);

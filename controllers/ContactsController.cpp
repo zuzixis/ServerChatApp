@@ -68,13 +68,13 @@ string ContactsController::removeFromContacts(const json *data) {
         return R"({"status": 400,"data":{"errors":[{"user_id":"S týmto uživateľom neexistuje kontakt."}]}})";
     }
 
-    string filtData = R"({"or":[{"and":{"user_1":)" + to_string(userId) + ",\"user_2\":" + to_string(myId) +
-                      R"(}},{"and":{"user_1":)" +
-                      to_string(myId) + ",\"user_2\":" + to_string(userId) + "}}]}";
-    json filters = json::parse(filtData);
+//    string filtData = R"({"or":[{"and":{"user_1":)" + to_string(userId) + ",\"user_2\":" + to_string(myId) +
+//                      R"(}},{"and":{"user_1":)" +
+//                      to_string(myId) + ",\"user_2\":" + to_string(userId) + "}}]}";
+//    json filters = json::parse(filtData);
 
     json actualJson;
-    JsonReader::read(Helpers::DATABASE_CONTACTS, filters, actualJson);
+    JsonReader::read(Helpers::DATABASE_CONTACTS, {}, actualJson);
 
 
     if (actualJson.empty()) {
@@ -97,6 +97,7 @@ string ContactsController::removeFromContacts(const json *data) {
 //                return false;
             });
 
+//    cout << "actualJson"<<newJson << endl;
 
     ofstream file(Helpers::DATABASE_CONTACTS);
     file << newJson;
