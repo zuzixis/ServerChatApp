@@ -48,12 +48,9 @@ public:
         delete contactsController;
         delete groupsController;
         delete messageController;
-//        delete activeUsersProvider;
+        delete requestsController;
+        delete userController;
     }
-
-
-
-
 
     string redirect(const string &action, json &data);
 };

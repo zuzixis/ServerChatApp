@@ -64,6 +64,7 @@ void *handle_client(int connfd) {
     string final;
     while (1) {
 
+
 //        final = "";
         bzero(buffer, BUFFER_SZ);
         receiveSendStatus = recv(connfd, buffer, BUFFER_SZ, 0);
@@ -82,6 +83,7 @@ void *handle_client(int connfd) {
 
                 if (j["action"] == "LOGIN" || j["action"] == "REGISTER" || user != nullptr) {
                     pthread_mutex_lock(&clients_mutex);
+
                     if (user != nullptr) {
                         ActiveUsersProvider::getInstance().setActualUserId(user->getId());
                     } else {

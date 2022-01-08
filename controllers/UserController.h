@@ -13,7 +13,6 @@ using json = nlohmann::json;
 class UserController {
 public:
     UserController();
-
     ~UserController();
 
 

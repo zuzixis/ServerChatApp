@@ -34,7 +34,11 @@ add_executable(
         providers/ActiveUsersProvider.cpp
         providers/ActiveUsersProvider.h
         controllers/UserController.cpp
-        controllers/UserController.h Cryptograph.cpp Cryptograph.h)
+        controllers/UserController.h
+        Cryptograph.cpp
+        Cryptograph.h)
+
+
 
 
 

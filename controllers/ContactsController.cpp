@@ -97,6 +97,7 @@ string ContactsController::removeFromContacts(const json *data) {
 //                return false;
             });
 
+
     ofstream file(Helpers::DATABASE_CONTACTS);
     file << newJson;
     file.close();

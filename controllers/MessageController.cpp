@@ -63,6 +63,7 @@ string MessageController::sendMessage(json *data) {
 //                     "    \"sent_at\": \"2021-12-19 21:05:00\"\n"
 //                     "  }";
 
+
     cout << *data << endl;
     loadedMessages.push_back(*data);
     ofstream file(Helpers::DATABASE_MESSAGES);
@@ -93,6 +94,7 @@ string MessageController::sendMessage(json *data) {
 
     return R"({"status": 200,"data":{}})";
 }
+
 
 string MessageController::sendFile(const json *data) {
     return "false";

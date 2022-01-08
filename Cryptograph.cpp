@@ -14,6 +14,7 @@ string Cryptograph::decrypt(const string &in) {
     return out;
 }
 
+
 string Cryptograph::encrypt(const string &in) {
     string out;
 

@@ -80,7 +80,6 @@ string RequestsController::getContactRequests(const json *data) {
 
     json retUsers;
     if (!loadedRequests.empty()) {
-
         string usersFiltersString = "{\"or\":[";
         int x;
         for (auto loadedRequest: loadedRequests) {
@@ -209,5 +208,7 @@ string RequestsController::rejectContactRequest(const json *data) {
 //    Helpers::broadcastToUser(userTo, broadJson.dump());
 
     return R"({"status": 200,"data":{}})";
+
+
 }
 

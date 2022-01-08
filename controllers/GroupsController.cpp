@@ -146,7 +146,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
     copy_if(
             actualJson.begin(), actualJson.end(),
             back_inserter(newJson), [&groupId,&userId](const json &item) {
-                return !((int) (item["group_id"]) == groupId && (int) (item["user_id"]) != userId);
+                return !((int) (item["group_id"]) == groupId && (int) (item["user_id"]) == userId);
 //                return (int) (item["group_id"]) != groupId || (int) (item["group_id"]) != groupId;
             });
 
@@ -265,6 +265,7 @@ string GroupsController::removeGroup(const json *data) {
     ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
     fileGU << newJson;
     fileGU.close();
+
 
     return R"({"status": 200,"data":{}})";
 }

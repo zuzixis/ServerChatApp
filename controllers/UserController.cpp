@@ -29,6 +29,7 @@ string UserController::search(const json *data) {
     json loadedUsers;
     JsonReader::read(Helpers::DATABASE_USERS, filters, loadedUsers);
 
+
     json ret;
     copy_if(
             loadedUsers.begin(), loadedUsers.end(),

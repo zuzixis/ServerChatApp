@@ -8,6 +8,7 @@ void Group::setId(int id) {
     Group::id = id;
 }
 
+
 const string &Group::getName() const {
     return name;
 }

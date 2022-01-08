@@ -12,6 +12,7 @@ private:
     int id;
     string name, createdAt;
 
+
 public:
     Group() : Model(){
         id = 0;
