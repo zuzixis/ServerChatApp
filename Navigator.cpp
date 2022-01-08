@@ -35,10 +35,6 @@ string Navigator::redirect(const string &action, json &data) {
             return this->requestsController->rejectContactRequest(&data);
         } else if (action == "SEND_MESSAGE") {
             return this->messageController->sendMessage(&data);
-        } else if (action == "SEND_FILE") {
-            return this->messageController->sendFile(&data);
-        } else if (action == "SEND_IMAGE") {
-            return this->messageController->sendImage(&data);
         } else if (action == "SEARCH_USERS") {
             return this->userController->search(&data);
         } else if (action == "SEARCH_GROUPS") {

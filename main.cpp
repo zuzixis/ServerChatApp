@@ -8,6 +8,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <thread>
+#include <assert.h>
 #include <sys/types.h>
 #include <signal.h>
 #include "providers/ActiveUsersProvider.h"
@@ -18,16 +19,14 @@
 #include <regex>
 
 #define MAX_CLIENTS 100
-#define BUFFER_SZ 4096
+#define BUFFER_SZ 1024
 
 using json = nlohmann::json;
 static unsigned int cli_count = 0;
 static int uid = 10;
 
-
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 //ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-
 
 void print_client_addr(struct sockaddr_in addr) {
     printf("%d.%d.%d.%d",
@@ -44,12 +43,11 @@ void *handle_client(int connfd) {
     char name[32];
 
     cli_count++;
-
     sprintf(buff_out, "Someone has joined\n");
 
     bzero(buff_out, BUFFER_SZ);
     char buffer[BUFFER_SZ];
-    int receiveSendStatus;
+    int receivedSize;
 //    bool enableNavigation;
     string output;
     User *user = nullptr;
@@ -61,29 +59,47 @@ void *handle_client(int connfd) {
 //    setsockopt(rs, SOL_TCP, TCP_KEEPIDLE, (void*)&keepidle , sizeof(keepidle ));
 //    setsockopt(rs, SOL_TCP, TCP_KEEPINTVL, (void *)&keepinterval , sizeof(keepinterval ));
 //    setsockopt(rs, SOL_TCP, TCP_KEEPCNT, (void *)&keepcount , sizeof(keepcount ));
-    string final;
     while (1) {
 
-
+        string final = "";
 //        final = "";
+        string msgSizeString;
+
+        int msgSize = 0;
+        while (msgSize == 0 || msgSize > final.size()) {
         bzero(buffer, BUFFER_SZ);
-        receiveSendStatus = recv(connfd, buffer, BUFFER_SZ, 0);
-//        do {
-//
-//            final += buffer;
-//        } while (receiveSendStatus > 0);
-//        receive = recv(connfd, buffer, BUFFER_SZ, 0);
-        if (receiveSendStatus > 0) {
-//            cout << "buffer: " << buffer << endl;
-            string inp = Cryptograph::decrypt(buffer);
-            json j = json::parse(inp);
+            receivedSize = recv(connfd, buffer, BUFFER_SZ-1, 0);
+            if (receivedSize > 0){
+                if ( msgSize == 0) {
+                    final = buffer;
+                    assert(final.find('|') != string::npos);
+
+                    size_t msgSizeLength = final.find('|');
+                    msgSizeString = final.substr(0, msgSizeLength);
+                    if (Helpers::isNumber(msgSizeString)) {
+                        msgSize = stoi(msgSizeString);
+                        final = final.substr(msgSizeLength + 1);
+                    }
+                } else {
+                    final += buffer;
+                }
+            }
+
+
             bzero(buffer, BUFFER_SZ);
+        }
+        bzero(buffer, BUFFER_SZ);
+
+        if (!final.empty()) {
+//            cout << "buffer: " << buffer << endl;
+//            string inp = final;
+            string inp = Cryptograph::decrypt(final);
+            json j = json::parse(inp);
             cout << j << endl;
             if (j.contains("data") && j.contains("action")) {
 
                 if (j["action"] == "LOGIN" || j["action"] == "REGISTER" || user != nullptr) {
                     pthread_mutex_lock(&clients_mutex);
-
                     if (user != nullptr) {
                         ActiveUsersProvider::getInstance().setActualUserId(user->getId());
                     } else {
@@ -120,14 +136,15 @@ void *handle_client(int connfd) {
                 //vrati sa chyba, že data nie su kompletne
                 output = R"({"status":422,"data":{"msg":""}})";// TODO: do dat daj, v com bola chyba
             }
+            cout << "output" << output << endl;
             output = Cryptograph::encrypt(output);
-            cout << "output" << output <<  endl;
-            Helpers::sgets(buffer, BUFFER_SZ, &output);
-            receiveSendStatus = send(connfd, buffer, strlen(buffer), 0);
-//            do {
-////                final += buffer;
-//            } while (receiveSendStatus > 0);
-        } else if (receiveSendStatus < 0) {
+            output = to_string(output.size())+'|'+output;
+//            Helpers::sgets(buffer, BUFFER_SZ, &output);
+
+
+            receivedSize = send(connfd, output.c_str(), strlen(output.c_str()), 0);
+        }
+        if (receivedSize < 0) {
             break;
         }
     }

@@ -96,13 +96,84 @@ string MessageController::sendMessage(json *data) {
 }
 
 
-string MessageController::sendFile(const json *data) {
-    return "false";
-}
-
-string MessageController::sendImage(const json *data) {
-    return "false";
-}
+// {action:send_message,data:{message:"?:{filename:xx.jpg,file:"lkmsadnkdsadskllkopadopadqw./..'.[p[2"}:?"}}
+//string MessageController::sendFile(const json *data) {
+//    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
+//
+//    // Idem vytvorit spravu, ulozit ju do suboru a neskor ju poslem klientom
+//
+//    if (!data->contains("file") || !data->contains("fileName") || ((!data->contains("user_to") && !data->contains("group_to")) ||
+//                                       (data->contains("user_to") && data->contains("group_to")))) {
+//        return R"({"status": 422,"data":{}})";
+//    }
+//
+//    bool toGroup = data->contains("group_to");
+//    int userFrom = activeUsersProvider.getActualUserId();
+//    int toId;
+//    json newMessage;
+//    newMessage["fileName"] = data->at("filename");
+//
+//    if (toGroup) {
+//        toId = data->at("group_to");
+//        newMessage["group_to"] = data->at("group_to");
+//        newMessage["user_to"] = "null";
+////    newMessage[""]
+//    } else {
+//        toId = data->at("user_to");
+//        newMessage["user_to"] = data->at("user_to");
+//        newMessage["group_to"] = "null";
+//        if(toId == userFrom){
+//            return R"({"status": 422,"data":{}})";
+//        }
+//    }
+//
+//    json loadedMessages;
+//    JsonReader::read(Helpers::DATABASE_MESSAGES, {}, loadedMessages);
+//
+//    if (loadedMessages.empty()) {
+//        newMessage["id"] = 1;
+//    } else {
+////        cout << loadedMessages.back().at("id") << endl;
+//        newMessage["id"] = (int) loadedMessages.back().at("id") + 1;
+//
+////        (*data)["id"] = (int) loadedMessages.back().at("id") + 1;
+//    }
+//
+//    newMessage["user_from"] = userFrom;
+//    // TODO: dories status a sent_at
+//    newMessage["status"] = "";
+//    newMessage["created_at"] = Helpers::currentDateTime();
+//
+//    cout << *data << endl;
+//    loadedMessages.push_back(newMessage);
+//    ofstream file(Helpers::DATABASE_MESSAGES);
+//    file << loadedMessages;
+//    file.close();
+//
+//    json users;
+////    int x = msg["user_from"];
+//    string userFiltersString = "{\"id\":" + to_string(userFrom) + "}";
+//    JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
+//
+//    (*data)["user"] = users[0];
+//
+//    string broadJsonString = "{\"type\":" + to_string(toGroup ? 2 : 1) + ",\"data\":" + data->dump() + "}";
+////    cout << "broadJsonString" << broadJsonString <<endl;
+////    json broadJson = json::parse(broadJsonString);
+//    if (toGroup) {
+//        for (auto u: Group::getMembers(toId)) {
+//            if(u["user_id"] == userFrom){
+//                continue;
+//            }
+//            Helpers::broadcastToUser(u["user_id"], broadJsonString);
+//        }
+//    } else {
+//        Helpers::broadcastToUser(toId, broadJsonString);
+//    }
+//// TODO: ak posielam spravu do skupiny, chcem poslat upozornenie vsetkym v skupine
+//
+//    return R"({"status": 200,"data":{}})";
+//}
 
 json MessageController::getConversation(const json *data) {
     cout << *data << endl;

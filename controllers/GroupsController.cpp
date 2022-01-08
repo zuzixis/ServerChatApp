@@ -142,7 +142,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
 
     json actualJson,newJson;
     JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, actualJson);
-    newJson.clear();
+//    newJson.clear();
     copy_if(
             actualJson.begin(), actualJson.end(),
             back_inserter(newJson), [&groupId,&userId](const json &item) {
