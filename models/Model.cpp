@@ -12,3 +12,4 @@ Model::Model(const string *file) {
 Model::~Model() {
     //TODO: implement close file
 }
+

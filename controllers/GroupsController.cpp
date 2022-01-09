@@ -130,6 +130,7 @@ string GroupsController::unjoinFromGroup(const json *data) {
         return R"({"status": 422,"data":{"errors":[{"group_id":"Id skupiny je povinné"}]}})";
     }
 
+
     int groupId = data->at("group_id");
 
     if (!Group::exists(groupId)) {

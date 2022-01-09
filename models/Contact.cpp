@@ -12,6 +12,7 @@ int Contact::getId() const {
     return id;
 }
 
+
 Model *Contact::get() {
     //TODO: implementovať get
     return nullptr;

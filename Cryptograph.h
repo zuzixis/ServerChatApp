@@ -9,4 +9,3 @@ public:
     static string encrypt(const string& input);
 };
 
-

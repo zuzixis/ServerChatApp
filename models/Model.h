@@ -14,6 +14,7 @@ public:
     Model();
     ~Model();
 
+
     //TODO: implementovat v kazdej dcerskej triede metodu get, ktora bude obsahovat pracu so suborom,
     // prip. bude citat dany atribut a podla niecoho bude z nich filtrovat a vrati iba spravne objekty
     // premenene do modelov. Asi treba poslat do konstruktora modelu iba objekt ako text alebo pole

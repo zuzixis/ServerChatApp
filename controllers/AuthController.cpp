@@ -12,7 +12,6 @@ string AuthController::login(const json *data, int *connFd) {
     json loadedUsers;
 //    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     JsonReader::read(Helpers::DATABASE_USERS, *data, loadedUsers);
-
     cout << loadedUsers << endl;
     if (loadedUsers.empty()) {
         return R"({"status": 401,"data":{"msg":"Zlé prihlásovacie údaje."}})";

@@ -16,6 +16,7 @@ enum StatusContact {
     waiting, confirmed
 };
 
+
 class Contact : public Model {
 private:
     int id;

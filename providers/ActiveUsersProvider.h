@@ -50,6 +50,7 @@ public:
 
     User *getLastUser();
 
+
     int getActualUserId() const;
 
     void setActualUserId(int actualUserId);

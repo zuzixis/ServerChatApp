@@ -24,6 +24,7 @@ string UserController::search(const json *data) {
     string x = data->at("word");
     string filtersString = R"({"name":"LIKE:)" + x + "\"}";
 
+
     json filters = json::parse(filtersString);
 
     json loadedUsers;

@@ -76,6 +76,7 @@ string RequestsController::getContactRequests(const json *data) {
     json loadedRequests;
     JsonReader::read(Helpers::DATABASE_CONTACT_REQUESTS, filters, loadedRequests);
 
+
     cout << loadedRequests << endl;
 
     json retUsers;

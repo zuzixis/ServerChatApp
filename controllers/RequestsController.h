@@ -23,6 +23,7 @@ public:
 
     string confirmationContactRequest(const json *data);
 
+
     string rejectContactRequest(const json *data);
 
 

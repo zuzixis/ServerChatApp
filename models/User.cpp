@@ -15,6 +15,7 @@ const string &User::getName() const {
     return name;
 }
 
+
 void User::setName(const string &name) {
     User::name = name;
 }

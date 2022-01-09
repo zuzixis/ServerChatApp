@@ -18,6 +18,7 @@ const User *Message::getUserFrom() const {
     return user_from;
 }
 
+
 const User *Message::getUserTo() const {
     return user_to;
 }

@@ -20,6 +20,7 @@ private:
     string message, sent_at;
     Status_Message* status;
 
+
 public:
     Message() : Model(){
         id = 0;

@@ -17,8 +17,6 @@ using namespace std;
 class Navigator {
 private:
     int *connfd;
-//    int newUid;
-//    sockaddr_in *cliAddr;
     AuthController *authController;
     ContactsController *contactsController;
     GroupsController *groupsController;
@@ -32,8 +30,6 @@ private:
 public:
     Navigator(int* connfd) {
         this->connfd = connfd;
-//        this->newUid = newUid;
-//        this->cliAddr = cliAddr;
         activeUsersProvider = &ActiveUsersProvider::getInstance();
         authController = new AuthController(activeUsersProvider);
         contactsController = new ContactsController();
@@ -51,6 +47,8 @@ public:
         delete requestsController;
         delete userController;
     }
+
+
 
     string redirect(const string &action, json &data);
 };

@@ -18,6 +18,7 @@ string Cryptograph::decrypt(const string &in) {
 string Cryptograph::encrypt(const string &in) {
     string out;
 
+
     for (char c: in) {
         int temp = (c + key);
 

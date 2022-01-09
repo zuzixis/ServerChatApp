@@ -20,6 +20,7 @@ public:
         createdAt = "";
     }
 
+
     Group(const string *file,int id, const string &name, const string &createdAt) : Model(file){
         this->id = id;
         this->name = name;

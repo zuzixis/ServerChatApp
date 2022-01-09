@@ -222,3 +222,38 @@ json MessageController::getConversation(const json *data) {
     cout << loadedMessages << endl;
     return R"({"status": 200,"data":)" + (!loadedMessages.empty() ? loadedMessages.dump() : "[]") + "}";
 }
+
+json MessageController::getMessageById(const json *data) {
+    cout << *data << endl;
+
+    if (!(data->contains("message_Id"))) {
+        return R"({"status": 422,"data":{"message":"Požiadavka musí obsahovať user_to alebo group_to. Nie však obe naraz!"}})";
+    }
+
+    int toId;
+    toId = data->at("message_Id");
+    json filters;
+
+    filters = json::parse("{\"id\":" + to_string(toId) + "}");
+
+
+    cout << "filters" << filters << endl;
+    json loadedMessages;
+    JsonReader::read(Helpers::DATABASE_MESSAGES, filters, loadedMessages);
+
+    json users;
+    string userFiltersString;
+
+    for (auto &msg: loadedMessages) {
+        int x = msg["user_from"];
+        userFiltersString = "{\"id\":" + to_string(x) + "}";
+        JsonReader::read(Helpers::DATABASE_USERS, json::parse(userFiltersString), users);
+
+        msg["user"] = users[0];
+        users.clear();
+    }
+
+    cout << loadedMessages << endl;
+    return R"({"status": 200,"data":)" + (!loadedMessages.empty() ? loadedMessages.dump() : "[]") + "}";
+
+}

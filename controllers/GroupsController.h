@@ -25,4 +25,5 @@ public:
     string unjoinFromGroup(const json* data);
 
     string removeGroup(const json *json);
+
 };

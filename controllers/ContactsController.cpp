@@ -1,3 +1,6 @@
+
+
+
 //
 // Created by Zuzana Žillová on 23. 12. 2021.
 //
@@ -81,6 +84,7 @@ string ContactsController::removeFromContacts(const json *data) {
         return R"({"status": 400,"data":{"msg":""}})";
     }
 
+
     json newJson;
     copy_if(
             actualJson.begin(), actualJson.end(),
@@ -96,6 +100,8 @@ string ContactsController::removeFromContacts(const json *data) {
 //                }
 //                return false;
             });
+
+//    cout << "actualJson"<<newJson << endl;
 
 //    cout << "actualJson"<<newJson << endl;
 

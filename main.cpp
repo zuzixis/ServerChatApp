@@ -48,7 +48,7 @@ void *handle_client(int connfd) {
 
     bzero(buff_out, BUFFER_SZ);
     char buffer[BUFFER_SZ];
-    bzero(buffer, BUFFER_SZ);
+
 
     int receivedSize;
 //    bool enableNavigation;
@@ -63,6 +63,7 @@ void *handle_client(int connfd) {
 //    setsockopt(rs, SOL_TCP, TCP_KEEPINTVL, (void *)&keepinterval , sizeof(keepinterval ));
 //    setsockopt(rs, SOL_TCP, TCP_KEEPCNT, (void *)&keepcount , sizeof(keepcount ));
     while (1) {
+        bzero(buffer, BUFFER_SZ);
 
         string final = "";
 //        final = "";
@@ -72,49 +73,53 @@ void *handle_client(int connfd) {
         pfd.fd = connfd;
         pfd.events = POLLIN | POLLHUP | POLLRDNORM;
         pfd.revents = 0;
-        bool clientClosed = false;
-        while (pfd.revents == 0) {
-            // call poll with a timeout of 100 ms
-            if (poll(&pfd, 1, 100) > 0) {
-                // if result > 0, this means that there is either data available on the
-                // socket, or the socket has been closed
-//                char buffer[32];
-                if (recv(connfd, buffer, BUFFER_SZ-1, MSG_PEEK | MSG_DONTWAIT) == 0) {
-                    // if recv returns zero, that means the connection has been closed:
-                    clientClosed = true;
+//        bool clientClosed = false;
+//        while (pfd.revents == 0) {
+//            // call poll with a timeout of 100 ms
+//            if (poll(&pfd, 1, 100) > 0) {
+//                // if result > 0, this means that there is either data available on the
+//                // socket, or the socket has been closed
+////                char buffer[32];
+//                if (recv(connfd, buffer, BUFFER_SZ-1, MSG_PEEK | MSG_DONTWAIT) == 0) {
+//                    // if recv returns zero, that means the connection has been closed:
+//                    clientClosed = true;
+//
+//                }
+//            }
+//        }
 
-                }
-            }
-        }
+        //bzero(buffer, BUFFER_SZ);
+        receivedSize = recv(connfd, buffer, BUFFER_SZ-1, 0);
+        final = buffer;
 
-        int msgSize = 0;
-        while (!clientClosed && (msgSize == 0 || msgSize > final.size())) {
-        bzero(buffer, BUFFER_SZ);
-            receivedSize = recv(connfd, buffer, BUFFER_SZ-1, 0);
-            if (receivedSize > 0){
-                if ( msgSize == 0) {
-                    final = buffer;
-                    assert(final.find('|') != string::npos);
+//        int msgSize = 0;
+//        while (!clientClosed && (msgSize == 0 || msgSize > final.size())) {
+//        bzero(buffer, BUFFER_SZ);
+//            receivedSize = recv(connfd, buffer, BUFFER_SZ-1, 0);
+//            if (receivedSize > 0){
+//                if ( msgSize == 0) {
+//                    final = buffer;
+//                    assert(final.find('|') != string::npos);
+//
+//                    size_t msgSizeLength = final.find('|');
+//                    msgSizeString = final.substr(0, msgSizeLength);
+//                    if (Helpers::isNumber(msgSizeString)) {
+//                        msgSize = stoi(msgSizeString);
+//                        final = final.substr(msgSizeLength + 1);
+//                    }
+//                } else {
+//                    final += buffer;
+//                }
+//            }
+//
+//
+//            bzero(buffer, BUFFER_SZ);
+//        }
+//        bzero(buffer, BUFFER_SZ);
 
-                    size_t msgSizeLength = final.find('|');
-                    msgSizeString = final.substr(0, msgSizeLength);
-                    if (Helpers::isNumber(msgSizeString)) {
-                        msgSize = stoi(msgSizeString);
-                        final = final.substr(msgSizeLength + 1);
-                    }
-                } else {
-                    final += buffer;
-                }
-            }
-
-
-            bzero(buffer, BUFFER_SZ);
-        }
-        bzero(buffer, BUFFER_SZ);
-
-        if ( clientClosed || receivedSize < 0) {
-            break;
-        }
+//        if ( clientClosed || receivedSize < 0) {
+//            break;
+//        }
 
         if (!final.empty()) {
 //            cout << "buffer: " << buffer << endl;
@@ -164,8 +169,10 @@ void *handle_client(int connfd) {
             }
             cout << "output" << output << endl;
             output = Cryptograph::encrypt(output);
-            output = to_string(output.size())+'|'+output;
+            //output = to_string(output.size())+'|'+output;
 //            Helpers::sgets(buffer, BUFFER_SZ, &output);
+
+
 
 
             receivedSize = send(connfd, output.c_str(), strlen(output.c_str()), 0);

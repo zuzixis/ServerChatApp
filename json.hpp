@@ -26,10 +26,8 @@ LIABILITY, WHETHER IN AN ACTION OF  CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 #ifndef INCLUDE_NLOHMANN_JSON_HPP_
 #define INCLUDE_NLOHMANN_JSON_HPP_
-
 #define NLOHMANN_JSON_VERSION_MAJOR 3
 #define NLOHMANN_JSON_VERSION_MINOR 6
 #define NLOHMANN_JSON_VERSION_PATCH 1
@@ -7182,6 +7180,8 @@ This class implements a recursive decent parser.
             template <typename SAX>
             bool sax_parse_internal(SAX* sax)
             {
+
+
                 // stack to remember the hierarchy of structured values we are parsing
                 // true = array; false = object
                 std::vector<bool> states;

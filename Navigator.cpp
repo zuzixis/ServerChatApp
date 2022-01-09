@@ -49,6 +49,8 @@ string Navigator::redirect(const string &action, json &data) {
             return this->groupsController->removeGroup(&data);
         }else if (action == "UNJOIN_FROM_GROUP") {
             return this->groupsController->unjoinFromGroup(&data);
+        }else if (action == "GET_MESSAGE_BY_ID") {
+            return this->messageController->getMessageById(&data);
         }
     }
 

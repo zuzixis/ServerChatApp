@@ -58,6 +58,7 @@ bool Group::exists(const int id) {
     return !loadedUsers.empty();
 }
 
+
 json Group::getMembers(const int id) {
     json loadedUsers;
     json filters = json::parse("{\"group_id\":" + to_string(id) + "}");
