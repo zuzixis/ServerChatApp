@@ -7,19 +7,9 @@
 
 #include "ContactsController.h"
 
-ContactsController::ContactsController() {
-
-}
-
-ContactsController::~ContactsController() {
-
-}
-
 string ContactsController::getContacts(const json *data) {
     cout << *data << endl;
     int userId = ActiveUsersProvider::getInstance().getActualUserId();
-//    int userTo = data->at("user_to");
-    // {or:{x:1,y:2}}
     json filters = json::parse(
             R"({"or":)"s + "{\"user_1\":" + to_string(userId) + ",\"user_2\":" + to_string(userId) +
             "}}");
@@ -48,13 +38,8 @@ string ContactsController::getContacts(const json *data) {
         json usersFilters = json::parse(usersFiltersString);
         JsonReader::read(Helpers::DATABASE_USERS, usersFilters, retUsers);
     }
-
-// TODO: ideme davat do usera spravy?
-
-//    return user->getMessages();
     cout << retUsers << endl;
     return R"({"status": 200,"data":)" + (!retUsers.empty() ? retUsers.dump() : "[]") + "}";
-//    return loadedMessages;
 }
 
 string ContactsController::removeFromContacts(const json *data) {
@@ -70,11 +55,6 @@ string ContactsController::removeFromContacts(const json *data) {
     if(!Contact::exists(myId,userId)){
         return R"({"status": 400,"data":{"errors":[{"user_id":"S týmto uživateľom neexistuje kontakt."}]}})";
     }
-
-//    string filtData = R"({"or":[{"and":{"user_1":)" + to_string(userId) + ",\"user_2\":" + to_string(myId) +
-//                      R"(}},{"and":{"user_1":)" +
-//                      to_string(myId) + ",\"user_2\":" + to_string(userId) + "}}]}";
-//    json filters = json::parse(filtData);
 
     json actualJson;
     JsonReader::read(Helpers::DATABASE_CONTACTS, {}, actualJson);
@@ -94,21 +74,11 @@ string ContactsController::removeFromContacts(const json *data) {
 
                 return !((u1 == myId && u2 == userId) || (u2 == myId && u1 == userId));
 
-
-//                if ((int) (item["user_from"]) != myId || (int) (item["user_to"]) != userTo) {
-//                    return true;
-//                }
-//                return false;
             });
-
-//    cout << "actualJson"<<newJson << endl;
-
-//    cout << "actualJson"<<newJson << endl;
 
     ofstream file(Helpers::DATABASE_CONTACTS);
     file << newJson;
     file.close();
-
 
     return R"({"status": 200,"data":{}})";
 }

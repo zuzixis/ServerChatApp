@@ -60,15 +60,11 @@ bool Helpers::broadcastToUser(const int userId, string msg) {
 
     for (auto &userConnection: acceptorConnections) // access by reference to avoid copying
     {
-//        cout << "broadcastToUser: " << endl;
-//        cout << "userConnection->getSockfd(): " << userConnection->getSockfd() << endl;
-//        cout << "buffer: " << buffer << endl;
         string inp = Cryptograph::encrypt(buffer);
 
         receiveSendStatus = send(userConnection->getSockfd(), inp.c_str(), 4096, 0);
     }
 
-    // TODO: return value
     return true;
 }
 

@@ -12,11 +12,6 @@ using json = nlohmann::json;
 
 class UserController {
 public:
-    UserController();
-    ~UserController();
-
-
-
     string search(const json *data);
 };
 

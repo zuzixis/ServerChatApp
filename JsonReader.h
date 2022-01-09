@@ -14,8 +14,6 @@
 //
 
 
-
-
 using json = nlohmann::json;
 using namespace std;
 
@@ -28,6 +26,3 @@ private:
 
     static bool filterAnd(const json &filters, const json &item);
 };
-
-
-//#endif //SERVER_CHATAPP_JSONREADER_H

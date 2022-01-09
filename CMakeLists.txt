@@ -36,7 +36,6 @@ add_executable(
         controllers/UserController.cpp
         controllers/UserController.h
         Cryptograph.cpp Cryptograph.h
-#        controllers/FileController.cpp controllers/FileController.h
 )
 
 

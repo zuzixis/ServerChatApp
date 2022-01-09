@@ -22,8 +22,6 @@ string Cryptograph::encrypt(const string &in) {
     for (char c: in) {
         int temp = (c + key);
 
-        // Write temp as char in
-        // output file
         out += (char) temp;
     }
     return out;

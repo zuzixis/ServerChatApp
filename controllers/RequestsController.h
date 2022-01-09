@@ -13,19 +13,9 @@ using json = nlohmann::json;
 class RequestsController {
 
 public:
-    RequestsController();
-
-    ~RequestsController();
-
     string askForRequestsContact(const json *data);
-
     string getContactRequests(const json *data);
-
     string confirmationContactRequest(const json *data);
-
-
     string rejectContactRequest(const json *data);
-
-
 };
 

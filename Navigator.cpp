@@ -8,7 +8,6 @@ string Navigator::redirect(const string &action, json &data) {
 
 
     if (action == "LOGIN") {
-//        map<string, string> map = {{"name", "jozo"}, {"password", "pass"}};
         return this->authController->login(&data, this->connfd);
     } else if (action == "REGISTER") {
         return this->authController->createAccount(&data);

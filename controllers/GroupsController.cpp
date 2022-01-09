@@ -4,13 +4,6 @@
 
 #include "GroupsController.h"
 
-GroupsController::GroupsController() {
-
-}
-
-GroupsController::~GroupsController() {
-
-}
 
 string GroupsController::getGroups(const json *data) {
     cout << *data << endl;
@@ -24,7 +17,6 @@ string GroupsController::getGroups(const json *data) {
     json loadedGroupIds;
     JsonReader::read(Helpers::DATABASE_GROUP_USERS, filters, loadedGroupIds);
 
-    // {"or":[{"id":1},{"id":2}]}
     if (!loadedGroupIds.empty()) {
 
         string groupFiltersString = "{\"or\":[";
@@ -46,44 +38,18 @@ string GroupsController::getGroups(const json *data) {
 
 string GroupsController::search(const json *data) {
     cout << *data << endl;
-//    int userId = ActiveUsersProvider::getInstance().getActualUserId();
 
     if (!data->contains("word")) {
         return R"({"status": 422,"data":{"errors":[{"word":"Hľadaný výraz je povinný"}]}})";
     }
 
-
-//    string filtersString = "{\"user_id\":" + to_string(userId);// +"}";
-//    if (data->contains("word")) {
     string x = data->at("word");
     string filtersString = R"({"name":"LIKE:)" + x + "\"}";
-//    }
-//    filtersString += "}";
-
     json filters = json::parse(filtersString);
 
     json loadedGroups;
     JsonReader::read(Helpers::DATABASE_GROUP, filters, loadedGroups);
 
-    // {"or":[{"id":1},{"id":2}]}
-
-//    string groupFiltersString = "{\"or\":[";
-//    int x;
-//    for (auto loadedGroupId: loadedGroupIds) {
-//        x = loadedGroupId["group_id"];
-//        groupFiltersString += ("{\"id\":" + to_string(x) + "},");
-//    }
-//    groupFiltersString = groupFiltersString.substr(0, groupFiltersString.size() - 1);
-//    groupFiltersString += "]}";
-//
-//    json groupFilters = json::parse(groupFiltersString);
-//
-//    json loadedGroups;
-//    JsonReader::read(Helpers::DATABASE_GROUP, groupFilters, loadedGroups);
-//    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
-// TODO: ideme davat do usera spravy?
-
-//    return user->getMessages();
     cout << loadedGroups << endl;
     return R"({"status": 200,"data":)" + (!loadedGroups.empty() ? loadedGroups.dump() : "[]") + "}";
 }
@@ -95,7 +61,6 @@ string GroupsController::joinToGroup(const json *data) {
     if (!data->contains("group_id")) {
         return R"({"status": 422,"data":{"errors":[{"group_id":"Id skupiny je povinné"}]}})";
     }
-
 
     int groupId = data->at("group_id");
 
@@ -137,18 +102,12 @@ string GroupsController::unjoinFromGroup(const json *data) {
         return R"({"status": 400,"data":{"errors":[{"group_id":"Skupina s daným id neexistuje"}]}})";
     }
 
-//    string filtersString = R"({"group_id":)" + to_string(groupId) + "}";
-
-//    json filters = json::parse(filtersString);
-
     json actualJson,newJson;
     JsonReader::read(Helpers::DATABASE_GROUP_USERS, {}, actualJson);
-//    newJson.clear();
     copy_if(
             actualJson.begin(), actualJson.end(),
             back_inserter(newJson), [&groupId,&userId](const json &item) {
                 return !((int) (item["group_id"]) == groupId && (int) (item["user_id"]) == userId);
-//                return (int) (item["group_id"]) != groupId || (int) (item["group_id"]) != groupId;
             });
 
     ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
@@ -161,7 +120,6 @@ string GroupsController::unjoinFromGroup(const json *data) {
 string GroupsController::create(const json *data) {
     json loadedItems;
     JsonReader::read(Helpers::DATABASE_GROUP, {}, loadedItems);
-    //JsonReader::read("skuska.json", {}, loadedUsers);
 
     if (!data->contains("name")) {
         return R"({"status": 422,"data":{"errors":[{"name":"Názov je povinný"}]}})";
@@ -266,7 +224,6 @@ string GroupsController::removeGroup(const json *data) {
     ofstream fileGU(Helpers::DATABASE_GROUP_USERS);
     fileGU << newJson;
     fileGU.close();
-
 
     return R"({"status": 200,"data":{}})";
 }

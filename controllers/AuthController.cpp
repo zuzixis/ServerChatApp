@@ -4,41 +4,26 @@ AuthController::AuthController(ActiveUsersProvider *activeUsersProvider) {
     this->activeUsersProvider = activeUsersProvider;
 }
 
-AuthController::~AuthController() {
-
-}
-
 string AuthController::login(const json *data, int *connFd) {
     json loadedUsers;
-//    ActiveUsersProvider activeUsersProvider = ActiveUsersProvider::getInstance();
     JsonReader::read(Helpers::DATABASE_USERS, *data, loadedUsers);
     cout << loadedUsers << endl;
     if (loadedUsers.empty()) {
         return R"({"status": 401,"data":{"msg":"Zlé prihlásovacie údaje."}})";
     } else {
-//        cout << "ActiveUsersProvider::getInstance().getActualUserId()"<< ActiveUsersProvider::getInstance().getActualUserId() <<  endl;
         if (ActiveUsersProvider::getInstance().getActualUserId() > 0) {
             return R"({"status": 401,"data":{"msg":"Už ste prihlásený."}})";
         }
-//    map<string, string> xx = loadedUsers.front();
 
-//        map<string, string> loadedUserMap = *loadedUsers.begin();
-        // Jozko, odteraz sa odpojis od defaultnej a pojdes cez tento socket!
-//        std::map<std::string, int> m2 = j;
-//    User *user = new User(1, "a", *connFd);
-//        cout << (typeof(loadedUsers[0]["id"])) << endl;
         User *user = new User((int) loadedUsers[0]["id"], loadedUsers[0]["name"], *connFd);
 
         this->activeUsersProvider->addUser(user);
-
-
         int id = loadedUsers[0]["id"];
         return to_string(id);
     }
 }
 
 string AuthController::logout(const json *data) {
-//    this->activeUsersProvider->removeUser(user);
     return "false";
 }
 
@@ -48,12 +33,8 @@ string AuthController::deleteAccount(const json *data) {
 
     cout << *data << endl << endl;
     cout << loadedJson << endl << endl;
-//    if (!data->contains("id")) {
-//        return R"({"status": 422,"data":{"errors":[{"id":"Atribút je povinný"}]}})";
-//    }
 
     int id = ActiveUsersProvider::getInstance().getActualUserId();
-//    cout << "id: " << id << endl << endl;
     bool found = false;
 
     copy_if(
@@ -64,7 +45,6 @@ string AuthController::deleteAccount(const json *data) {
                 }
                 found = true;
                 return false;
-//                return (int) (item["id"]) != id;
             });
 
     cout << newJson << endl << endl;
@@ -139,15 +119,12 @@ string AuthController::deleteAccount(const json *data) {
         return R"({"status": 200,"data":{}})";
     } else {
         return R"({"status": 400,"data":{"msg":""}})";
-
-//        return R"({"status": 400,"data":{}})"; // TODO: aka tu ma byt chyba?
     }
 }
 
 string AuthController::createAccount(json *data) {
     json loadedUsers;
     JsonReader::read(Helpers::DATABASE_USERS, {}, loadedUsers);
-    //JsonReader::read("skuska.json", {}, loadedUsers);
 
     if (!data->contains("name")) {
         return R"({"status": 422,"data":{"errors":[{"name":"Názov je povinný"}]}})";
