@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <poll.h>
 #include "providers/ActiveUsersProvider.h"
 #include "Navigator.h"
 #include "Helpers.h"
@@ -47,6 +48,8 @@ void *handle_client(int connfd) {
 
     bzero(buff_out, BUFFER_SZ);
     char buffer[BUFFER_SZ];
+    bzero(buffer, BUFFER_SZ);
+
     int receivedSize;
 //    bool enableNavigation;
     string output;
@@ -65,8 +68,27 @@ void *handle_client(int connfd) {
 //        final = "";
         string msgSizeString;
 
+        struct pollfd pfd;
+        pfd.fd = connfd;
+        pfd.events = POLLIN | POLLHUP | POLLRDNORM;
+        pfd.revents = 0;
+        bool clientClosed = false;
+        while (pfd.revents == 0) {
+            // call poll with a timeout of 100 ms
+            if (poll(&pfd, 1, 100) > 0) {
+                // if result > 0, this means that there is either data available on the
+                // socket, or the socket has been closed
+//                char buffer[32];
+                if (recv(connfd, buffer, BUFFER_SZ-1, MSG_PEEK | MSG_DONTWAIT) == 0) {
+                    // if recv returns zero, that means the connection has been closed:
+                    clientClosed = true;
+
+                }
+            }
+        }
+
         int msgSize = 0;
-        while (msgSize == 0 || msgSize > final.size()) {
+        while (!clientClosed && (msgSize == 0 || msgSize > final.size())) {
         bzero(buffer, BUFFER_SZ);
             receivedSize = recv(connfd, buffer, BUFFER_SZ-1, 0);
             if (receivedSize > 0){
@@ -89,6 +111,10 @@ void *handle_client(int connfd) {
             bzero(buffer, BUFFER_SZ);
         }
         bzero(buffer, BUFFER_SZ);
+
+        if ( clientClosed || receivedSize < 0) {
+            break;
+        }
 
         if (!final.empty()) {
 //            cout << "buffer: " << buffer << endl;
@@ -143,9 +169,6 @@ void *handle_client(int connfd) {
 
 
             receivedSize = send(connfd, output.c_str(), strlen(output.c_str()), 0);
-        }
-        if (receivedSize < 0) {
-            break;
         }
     }
 
